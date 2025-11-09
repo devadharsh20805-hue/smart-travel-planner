@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Travel Planner - Login</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(to bottom, #b3e5fc 0%, #e1f5fe 60%, #ffffff 100%);
+}
+
+/* Animated travel elements */
+.travel-item {
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  animation: moveAcross 60s linear infinite;
+}
+
+@keyframes moveAcross {
+  0% { transform: translateX(-200px); }
+  100% { transform: translateX(2000px); }
+}
+
+/* Airplane */
+.plane {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/854/854878.png');
+  width: 120px; height: 120px;
+  top: 20%;
+  animation-duration: 80s;
+}
+
+/* Hot air balloon */
+.balloon {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/789/789395.png');
+  width: 90px; height: 120px;
+  top: 40%;
+  animation-duration: 100s;
+  animation-delay: 10s;
+}
+
+/* Birds */
+.bird {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/616/616408.png');
+  width: 120px; height: 100px;
+  top: 30%;
+  animation-duration: 70s;
+  opacity: 0.7;
+}
+
+/* Header */
+h1 {
+  color: #005f99;
+  font-size: 3rem;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Login card */
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  z-index: 2;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.2);
+}
+.card h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+input:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 5px rgba(79,172,254,0.5);
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+a {
+  display: block;
+  margin-top: 15px;
+  color: #0077b6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+a:hover { color: #00b4d8; }
+
+/* Ground hill silhouette */
+.hills {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to top, #7ac76d, #b1e08e);
+  clip-path: ellipse(70% 40% at 50% 100%);
+  z-index: 1;
+}
+</style>
+</head>
+<body>
+
+<!-- Travel animations -->
+<div class="travel-item plane"></div>
+<div class="travel-item balloon"></div>
+<div class="travel-item bird"></div>
+
+<h1>Smart Travel Planner</h1>
+
+<div class="card">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+  <a href="signup.html">Create Account</a>
+</div>
+
+<div class="hills"></div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  try {
+    const res = await fetch("http://localhost:5000/auth/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    if (!res.ok) return alert(data.error);
+    window.location.href="home.html";  
+  } catch(err) { alert("Server not running!"); }
+});
+</script>
+
+</body>
+</html>

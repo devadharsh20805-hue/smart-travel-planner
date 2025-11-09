@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Travel Planner - Signup</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Dancing+Script:wght@700&display=swap');
+
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(to bottom, #a8e6ff, #f0faff);
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+/*Hide scrollbar but keep scroll functionality */
+body::-webkit-scrollbar { width: 0; background: transparent; }
+body { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+.floating {
+  position: absolute;
+  width: 80px;
+  opacity: 0.3;
+  animation: float 6s ease-in-out infinite;
+  z-index: 0;
+}
+
+.floating:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+.floating:nth-child(2) { top: 60%; left: 70%; animation-delay: 2s; }
+.floating:nth-child(3) { top: 40%; left: 30%; animation-delay: 4s; }
+.floating:nth-child(4) { top: 80%; left: 10%; animation-delay: 1s; }
+.floating:nth-child(5) { top: 25%; left: 80%; animation-delay: 3s; }
+
+h1 {
+  font-family: 'Dancing Script', cursive;
+  color: #ffffff;
+  font-size: 3.5rem;
+  margin: 40px 0 25px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+  text-align: center;
+  z-index: 1;
+  letter-spacing: 1px;
+}
+
+.card {
+  background: #fff;
+  padding: 35px 30px;
+  border-radius: 15px;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  transition: transform 0.3s;
+  z-index: 1;
+  margin-bottom: 50px;
+}
+
+.card:hover { transform: translateY(-5px); }
+.card h2 { margin-bottom: 20px; color: #333; font-weight: 700; }
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #00bfff;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+button:hover { background: #0099cc; transform: scale(1.02); }
+
+a {
+  display: block;
+  margin-top: 15px;
+  color: #00bfff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+a:hover { color: #0099cc; }
+
+/* Preferences styling */
+.preferences {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.pref-box {
+  background: #f0f8ff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+  font-size: 0.95rem;
+}
+
+.pref-box.selected {
+  background: #00bfff;
+  color: #fff;
+  border-color: #0099cc;
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<!-- Floating travel icons -->
+<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
+<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
+<img src="https://cdn-icons-png.flaticon.com/512/616/616490.png" class="floating" alt="luggage">
+<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
+<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
+
+<h1>Smart Travel Planner</h1>
+
+<div class="card">
+  <h2>Create Account</h2>
+  <form id="signupForm">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <input type="number" id="age" placeholder="Age" min="10" max="100" required>
+
+    <select id="gender" required>
+      <option value="">Select Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+
+    <select id="nationality" required>
+      <option value="">Select Nationality</option>
+      <option>Indian</option>
+      <option>American</option>
+      <option>British</option>
+      <option>Canadian</option>
+      <option>Australian</option>
+      <option>Japanese</option>
+      <option>French</option>
+      <option>German</option>
+      <option>Other</option>
+    </select>
+
+    <h3 style="margin-top:15px; color:#333;">Travel Preferences</h3>
+    <div class="preferences" id="preferences">
+      <div class="pref-box">Beaches</div>
+      <div class="pref-box">Mountains</div>
+      <div class="pref-box">Nature</div>
+      <div class="pref-box">City</div>
+      <div class="pref-box">Village</div>
+      <div class="pref-box">History</div>
+      <div class="pref-box">Architecture</div>
+      <div class="pref-box">Science</div>
+      <div class="pref-box">Art</div>
+      <div class="pref-box">Culture</div>
+      <div class="pref-box">Adventure</div>
+      <div class="pref-box">Wildlife</div>
+      <div class="pref-box">Food & Cuisine</div>
+      <div class="pref-box">Festivals</div>
+      <div class="pref-box">Shopping</div>
+      <div class="pref-box">Religious</div>
+      <div class="pref-box">Desert</div>
+      <div class="pref-box">Snow</div>
+      <div class="pref-box">Nightlife</div>
+      <div class="pref-box">Photography</div>
+      <div class="pref-box">Luxury Travel</div>
+      <div class="pref-box">Road Trips</div>
+      <div class="pref-box">Cruise</div>
+      <div class="pref-box">Hiking</div>
+      <div class="pref-box">Camping</div>
+    </div>
+
+    <button type="submit">Signup</button>
+  </form>
+  <a href="index.html">Already have an account? Login</a>
+</div>
+
+<script>
+//  Handle travel preference selection
+const preferenceBoxes = document.querySelectorAll('.pref-box');
+preferenceBoxes.forEach(box => {
+  box.addEventListener('click', () => box.classList.toggle('selected'));
+});
+
+//  Signup form submission
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const age = document.getElementById("age").value;
+  const gender = document.getElementById("gender").value;
+  const nationality = document.getElementById("nationality").value;
+  const selectedPrefs = [...document.querySelectorAll('.pref-box.selected')].map(p => p.textContent);
+
+  if (!username || !password) return alert("Username and password are required!");
+
+  try {
+    const res = await fetch("http://localhost:5000/signup", {  // ✅ updated route
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password, age, gender, nationality, preferences: selectedPrefs })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return alert(data.message || "Signup failed!");
+    }
+
+    //  Save user data to localStorage for profile page
+    localStorage.setItem("userProfile", JSON.stringify({ username, age, gender, nationality, preferences: selectedPrefs }));
+
+    alert("Signup successful! Please login now.");
+    window.location.href = "index.html";
+  } catch (err) {
+    console.error("❌ Fetch error:", err);
+    alert("⚠️ Server not running or unreachable!");
+  }
+});
+</script>
+
+</body>
+</html>

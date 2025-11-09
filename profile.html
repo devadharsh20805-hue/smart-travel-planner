@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Travel Planner - Profile</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to bottom, #a8e6ff, #f0faff);
+  display: flex;
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar { display: none; }
+
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.floating {
+  position: absolute;
+  width: 80px;
+  opacity: 0.25;
+  animation: float 6s ease-in-out infinite;
+  z-index: 0;
+}
+.floating:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+.floating:nth-child(2) { top: 60%; left: 70%; animation-delay: 2s; }
+.floating:nth-child(3) { top: 40%; left: 30%; animation-delay: 4s; }
+.floating:nth-child(4) { top: 80%; left: 10%; animation-delay: 1s; }
+.floating:nth-child(5) { top: 25%; left: 80%; animation-delay: 3s; }
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 5;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.sidebar h1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+  text-align: center;
+  color: #0077b6;
+  margin-bottom: 40px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 0 20px;
+}
+
+.menu button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 1.1rem;
+  color: #0077b6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.menu button:hover, .menu button.active {
+  background: #00bfff;
+  color: #fff;
+  transform: translateX(5px);
+}
+
+/* Main content */
+.main-content {
+  margin-left: 250px;
+  padding: 40px 60px;
+  width: calc(100% - 250px);
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Profile Card */
+.card {
+  background: #fff;
+  padding: 35px 30px;
+  border-radius: 15px;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  transition: transform 0.3s;
+  z-index: 1;
+  margin-top: 40px;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+.profile-icon {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 15px;
+  border-radius: 50%;
+  background: #e6f7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.profile-icon img {
+  width: 60px;
+  height: 60px;
+  opacity: 0.9;
+}
+
+.card h2 { margin-bottom: 20px; color: #333; font-weight: 700; }
+
+.info {
+  text-align: left;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+  margin-top: 10px;
+}
+
+.info p strong { color: #00bfff; }
+
+.pref-box {
+  display: inline-block;
+  background: #f0f8ff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 5px;
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+.pref-box.selected {
+  background: #00bfff;
+  color: white;
+  border-color: #0099cc;
+}
+
+button.main-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 8px;
+  background: #00bfff;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+button.main-btn:hover { background: #0099cc; transform: scale(1.02); }
+</style>
+</head>
+<body>
+
+<!-- Floating travel icons -->
+<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
+<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
+<img src="https://cdn-icons-png.flaticon.com/512/616/616490.png" class="floating" alt="luggage">
+<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
+<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div>
+    <h1>Smart Travel Planner</h1>
+    <div class="menu">
+      <button id="homeBtn">🏠 Home</button>
+      <button id="planTripBtn">🧭 Plan a Trip</button>
+      <button id="myTripsBtn">🧳 My Trips</button>
+      <button id="profileBtn" class="active">👤 Profile</button>
+    </div>
+  </div>
+  <div class="menu">
+    <button id="logoutBtn">🚪 Logout</button>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="card">
+    <div class="profile-icon">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="user icon">
+    </div>
+    <h2>My Profile</h2>
+    <div class="info" id="infoSection">
+      <p><strong>Username:</strong> <span id="username"></span></p>
+      <p><strong>Age:</strong> <span id="age"></span></p>
+      <p><strong>Gender:</strong> <span id="gender"></span></p>
+      <p><strong>Nationality:</strong> <span id="nationality"></span></p>
+      <h3 style="margin-top:15px; color:#333;">Travel Preferences</h3>
+      <div id="preferences"></div>
+    </div>
+    <button class="main-btn" id="editBtn">Edit</button>
+    <button class="main-btn" id="saveBtn" style="display:none;">Save Changes</button>
+    <button class="main-btn" id="logoutProfileBtn">Logout</button>
+  </div>
+</div>
+
+<script>
+// Load user details
+let user = JSON.parse(localStorage.getItem("userProfile"));
+
+function renderProfile() {
+  document.getElementById("username").textContent = user.username;
+  document.getElementById("age").textContent = user.age;
+  document.getElementById("gender").textContent = user.gender;
+  document.getElementById("nationality").textContent = user.nationality;
+
+  const prefDiv = document.getElementById("preferences");
+  prefDiv.innerHTML = "";
+  user.preferences.forEach(pref => {
+    const div = document.createElement("div");
+    div.classList.add("pref-box");
+    div.textContent = pref;
+    prefDiv.appendChild(div);
+  });
+}
+renderProfile();
+
+// Edit button
+document.getElementById("editBtn").addEventListener("click", () => {
+  const infoDiv = document.getElementById("infoSection");
+  infoDiv.innerHTML = `
+    <p><strong>Username:</strong> <input type="text" id="editUsername" value="${user.username}"></p>
+    <p><strong>Age:</strong> <input type="number" id="editAge" value="${user.age}"></p>
+    <p><strong>Gender:</strong>
+      <select id="editGender">
+        <option ${user.gender === "Male" ? "selected" : ""}>Male</option>
+        <option ${user.gender === "Female" ? "selected" : ""}>Female</option>
+        <option ${user.gender === "Other" ? "selected" : ""}>Other</option>
+      </select>
+    </p>
+    <p><strong>Nationality:</strong>
+      <select id="editNationality">
+        <option ${user.nationality === "Indian" ? "selected" : ""}>Indian</option>
+        <option ${user.nationality === "American" ? "selected" : ""}>American</option>
+        <option ${user.nationality === "British" ? "selected" : ""}>British</option>
+        <option ${user.nationality === "Other" ? "selected" : ""}>Other</option>
+      </select>
+    </p>
+    <h3 style="margin-top:15px; color:#333;">Travel Preferences</h3>
+    <div id="editPreferences">
+      ${["Beaches","Mountains","Nature","City","Village","History","Architecture","Science","Arts","Culture","Adventure","Wildlife","Food","Festivals","Shopping","Relegious","Desert","Snow","Nightlife","Luxury Travel","Photography","Road Trips","Cruise","Hiking","Camping"].map(pref =>
+        `<div class='pref-box ${user.preferences.includes(pref) ? "selected" : ""}'>${pref}</div>`
+      ).join("")}
+    </div>
+  `;
+  document.getElementById("editBtn").style.display = "none";
+  document.getElementById("saveBtn").style.display = "block";
+
+  document.querySelectorAll(".pref-box").forEach(box => {
+    box.addEventListener("click", () => box.classList.toggle("selected"));
+  });
+});
+
+// Save changes (now refreshes automatically)
+document.getElementById("saveBtn").addEventListener("click", () => {
+  user.username = document.getElementById("editUsername").value;
+  user.age = document.getElementById("editAge").value;
+  user.gender = document.getElementById("editGender").value;
+  user.nationality = document.getElementById("editNationality").value;
+
+  const selectedPrefs = [];
+  document.querySelectorAll("#editPreferences .pref-box.selected").forEach(box => {
+    selectedPrefs.push(box.textContent);
+  });
+  user.preferences = selectedPrefs;
+
+  localStorage.setItem("userProfile", JSON.stringify(user));
+  location.reload(); //  Auto refresh after saving
+});
+
+// Navigation
+document.getElementById('homeBtn').onclick = () => window.location.href = 'home.html';
+document.getElementById('planTripBtn').onclick = () => window.location.href = 'trip.html';
+document.getElementById('myTripsBtn').onclick = () => window.location.href = 'mytrips.html';
+document.getElementById('profileBtn').onclick = () => window.location.href = 'profile.html';
+
+// Logout
+document.getElementById("logoutBtn").onclick = logout;
+document.getElementById("logoutProfileBtn").onclick = logout;
+
+function logout() {
+  localStorage.removeItem("userProfile");
+  alert("You have been logged out!");
+  window.location.href = "index.html";
+}
+</script>
+</body>
+</html>

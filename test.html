@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Travel Planner - Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to bottom, #a8e6ff, #f0faff);
+  display: flex;
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar { display: none; }
+
+/* Floating icons */
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.floating {
+  position: absolute;
+  width: 80px;
+  opacity: 0.25;
+  animation: float 6s ease-in-out infinite;
+  z-index: 0;
+}
+.floating:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+.floating:nth-child(2) { top: 60%; left: 70%; animation-delay: 2s; }
+.floating:nth-child(3) { top: 40%; left: 30%; animation-delay: 4s; }
+.floating:nth-child(4) { top: 80%; left: 10%; animation-delay: 1s; }
+.floating:nth-child(5) { top: 25%; left: 80%; animation-delay: 3s; }
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 5;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+/* Logo */
+.sidebar h1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+  text-align: center;
+  color: #0077b6;
+  margin-bottom: 40px;
+}
+
+/* Menu */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 0 20px;
+}
+
+.menu button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 1.1rem;
+  color: #0077b6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.menu button:hover, .menu button.active {
+  background: #00bfff;
+  color: #fff;
+  transform: translateX(5px);
+}
+
+/* Main content */
+.main-content {
+  margin-left: 250px;
+  padding: 40px 60px;
+  width: calc(100% - 250px);
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Explore section */
+.explore {
+  text-align: center;
+}
+.explore h2 {
+  color: #0077b6;
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 25px;
+  justify-items: center;
+}
+
+.card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+  width: 260px;
+  transition: transform 0.3s;
+}
+.card:hover { transform: scale(1.05); }
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+.card h3 {
+  color: #333;
+  margin: 10px;
+}
+.card p {
+  color: #666;
+  font-size: 0.9rem;
+  padding: 0 10px 10px;
+}
+
+/* AI Assistant */
+.assistant-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #00bfff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s, background 0.3s;
+  z-index: 10;
+}
+.assistant-btn:hover {
+  background: #0099cc;
+  transform: scale(1.1);
+}
+
+/* Chat box */
+.chat-box {
+  position: fixed;
+  bottom: 100px;
+  right: 25px;
+  width: 320px;
+  height: 420px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9;
+}
+.chat-box.active {
+  display: flex;
+}
+.chat-header {
+  background: #00bfff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+}
+.chat-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+}
+.chat-input button {
+  background: #00bfff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- Floating icons -->
+<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
+<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
+<img src="https://cdn-icons-png.flaticon.com/512/616/616490.png" class="floating" alt="luggage">
+<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
+<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
+
+<!-- Sidebar Dashboard -->
+<div class="sidebar">
+  <div>
+    <h1>Smart Travel Planner</h1>
+    <div class="menu">
+      <button class="active">🏠 Explore</button>
+      <button>🧭 Plan a Trip</button>
+      <button>🧳 My Trips</button>
+      <button>👤 Profile</button>
+    </div>
+  </div>
+  <div class="menu">
+    <button>🚪 Logout</button>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="main-content">
+  <div class="explore">
+    <h2>Explore Destinations for You</h2>
+    <div class="cards">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Beach">
+        <h3>Goa</h3>
+        <p>Golden beaches, coastal cuisine, and lively culture.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470" alt="Manali">
+        <h3>Manali</h3>
+        <p>Snowy peaks, mountain treks, and serene valleys.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1" alt="Jaipur">
+        <h3>Jaipur</h3>
+        <p>Royal palaces, pink streets, and historical charm.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c" alt="Kerala">
+        <h3>Kerala</h3>
+        <p>Backwaters, lush greenery, and cultural harmony.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Delhi">
+        <h3>Delhi</h3>
+        <p>Historic landmarks and vibrant modern city life.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Assistant -->
+<button class="assistant-btn" id="assistantBtn" title="Chat with AI">🤖</button>
+
+<div class="chat-box" id="chatBox">
+  <div class="chat-header">AI Assistant</div>
+  <div class="chat-body">
+    <p>👋 Hey traveler! Need help planning your next trip?</p>
+  </div>
+  <div class="chat-input">
+    <input type="text" placeholder="Type your message...">
+    <button><span>📤</span></button>
+  </div>
+</div>
+
+<script>
+const assistantBtn = document.getElementById('assistantBtn');
+const chatBox = document.getElementById('chatBox');
+
+assistantBtn.addEventListener('click', () => {
+  chatBox.classList.toggle('active');
+});
+</script>
+
+</body>
+</html>
