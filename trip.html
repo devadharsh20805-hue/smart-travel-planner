@@ -297,7 +297,7 @@ async function sendMessage() {
   chatBody.scrollTop = chatBody.scrollHeight;
 
   try {
-    const res = await fetch('http://localhost:5000/chat', {
+    const res = await fetch('https://smart-travel-planner-68vq.onrender.com/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: msg })
@@ -355,7 +355,7 @@ document.getElementById("tripForm").addEventListener("submit", async (e) => {
     const originCoords = await getCoordinates(origin);
     const destCoords = await getCoordinates(destination);
 
-    const res = await fetch("http://localhost:5000/trip/plan", {
+    const res = await fetch("https://smart-travel-planner-68vq.onrender.com/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
