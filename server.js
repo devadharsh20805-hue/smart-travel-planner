@@ -7,7 +7,7 @@ const fetch = require("node-fetch");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // ✅ Changed line for Render
 
 //  Middleware
 app.use(
