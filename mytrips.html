@@ -344,7 +344,7 @@ async function sendMessage() {
 
   const tripData = null; // in mytrips.html we may not have current trip context
   try {
-    const response = await fetch("http://localhost:5000/chat", {
+    const response = await fetch("https://smart-travel-planner-68vq.onrender.com/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

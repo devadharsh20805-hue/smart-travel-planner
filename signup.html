@@ -227,7 +227,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   if (!username || !password) return alert("Username and password are required!");
 
   try {
-    const res = await fetch("http://localhost:5000/signup", {  // ✅ updated route
+    const res = await fetch("https://smart-travel-planner-68vq.onrender.com/signup", {  // ✅ updated route
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password, age, gender, nationality, preferences: selectedPrefs })
