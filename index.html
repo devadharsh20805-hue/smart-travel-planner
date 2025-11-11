@@ -163,7 +163,7 @@ a:hover { color: #00b4d8; }
 <div class="card">
   <h2>Login</h2>
   <form id="loginForm">
-    <input type="text" id="username" placeholder="Username" required>
+    <input type="text" id="email" placeholder="Email" required>
     <input type="password" id="password" placeholder="Password" required>
     <button type="submit">Login</button>
   </form>
@@ -172,22 +172,55 @@ a:hover { color: #00b4d8; }
 
 <div class="hills"></div>
 
-<script>
-document.getElementById("loginForm").addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  try {
-    const res = await fetch("https://smart-travel-planner-68vq.onrender.com/login", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({username, password})
-    });
-    const data = await res.json();
-    if (!res.ok) return alert(data.error);
-    window.location.href="home.html";  
-  } catch(err) { alert("Server not running!"); }
-});
+<!-- Firebase SDKs -->
+<script type="module">
+  // Import Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Login logic
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      // Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Retrieve user data from Firestore (unique space for each user)
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        // Store user info locally for session
+        localStorage.setItem("userId", user.uid);
+        localStorage.setItem("userEmail", email);
+
+        window.location.href = "home.html";
+      } else {
+        alert("User data not found. Please sign up again.");
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  });
 </script>
 
 </body>
