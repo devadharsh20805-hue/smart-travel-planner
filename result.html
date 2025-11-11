@@ -16,7 +16,6 @@ body {
   scrollbar-width: none;
 }
 body::-webkit-scrollbar { display: none; }
-/* existing styles unchanged */
 </style>
 </head>
 <body>
@@ -67,7 +66,7 @@ body::-webkit-scrollbar { display: none; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
@@ -78,7 +77,6 @@ const firebaseConfig = {
   appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -86,8 +84,9 @@ const db = getFirestore(app);
 const tripDetails = document.getElementById('tripDetails');
 const itineraryList = document.getElementById('itineraryList');
 let latestTrip = null;
+window.latestTrip = null; // ✅ make global for map
 
-// 🧭 Fetch latest trip for logged-in user
+// 🧭 Fetch latest trip for this logged-in user
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "index.html";
@@ -95,7 +94,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   try {
-    const tripsRef = collection(db, "users", "public", "trips");
+    const tripsRef = collection(db, "users", user.uid, "trips");
     const querySnapshot = await getDocs(tripsRef);
 
     if (querySnapshot.empty) {
@@ -106,6 +105,7 @@ onAuthStateChanged(auth, async (user) => {
     const allTrips = [];
     querySnapshot.forEach(doc => allTrips.push(doc.data()));
     latestTrip = allTrips.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))[0];
+    window.latestTrip = latestTrip;
 
     // ✅ Safe display to avoid undefined errors
     const safeValue = (val) => val ? val : "N/A";
@@ -123,7 +123,6 @@ onAuthStateChanged(auth, async (user) => {
       itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${latestTrip.destination}</li>`;
     }
 
-    // set map center if loaded
     if (window.initMap && typeof window.initMap === "function") {
       window.initMap();
     }
@@ -133,14 +132,12 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// 💾 Save trip manually again (optional)
-document.getElementById("saveTripBtn").addEventListener("click", async () => {
-  if (!latestTrip) return alert("No trip data to save.");
+document.getElementById("saveTripBtn").addEventListener("click", () => {
   alert("✅ Trip already saved to Firebase when planned!");
 });
 </script>
 
-<!-- ✅ Define initMap globally for Google Maps -->
+<!-- ✅ Google Maps -->
 <script>
 function initMap() {
   const map = new google.maps.Map(document.getElementById("map"), {
