@@ -183,26 +183,20 @@ body::-webkit-scrollbar { display: none; }
     try {
       if (!currentUser) throw new Error("User not logged in.");
 
-      // ✅ Save to Firebase
       await addDoc(collection(db, "users", currentUser.uid, "trips"), {
-        origin,
-        destination,
-        date,
-        days,
-        travelers,
-        budget,
+        origin, destination, date, days, travelers, budget,
         createdAt: new Date().toISOString()
       });
 
-      // ✅ Send to backend AI route
-      const res = await fetch("https://smart-travel-planner-68vq.onrender.com/plan-trip", {
+      // ✅ FIXED: correct backend route
+      const res = await fetch("https://smart-travel-planner-68vq.onrender.com/trip/plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin, destination, days, budget })
+        body: JSON.stringify({ origin, destination, date, days, travelers, budget })
       });
 
       const data = await res.json();
-      localStorage.setItem("tripResult", JSON.stringify(data));
+      sessionStorage.setItem("tripData", JSON.stringify(data));
       window.location.href = "result.html";
 
     } catch (err) {
