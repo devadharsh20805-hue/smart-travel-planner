@@ -149,10 +149,10 @@ button.primary:hover { background:#0099cc; }
   </div>
 </div>
 
-<!-- ✅ Firebase and Script -->
+<!-- ✅ Firebase Integration -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, doc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
@@ -167,7 +167,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ✅ Load trip data
+// ✅ Load trip data (from sessionStorage)
 const user = JSON.parse(localStorage.getItem("userProfile")) || { username: "guest" };
 const tripData = JSON.parse(sessionStorage.getItem("tripData"));
 const tripDetails = document.getElementById('tripDetails');
@@ -192,14 +192,14 @@ if (tripData) {
   tripDetails.innerHTML = "<p>No trip data found. Please plan a trip first.</p>";
 }
 
-// ✅ Save Trip to Firestore
+// ✅ Save Trip to Firestore (each user → separate document)
 document.getElementById('saveTripBtn').addEventListener('click', async () => {
   if (!tripData) return alert("No trip data found!");
 
   try {
-    const userDocRef = doc(db, "users", user.username);
-    const tripsCollection = collection(userDocRef, "trips");
-    await addDoc(tripsCollection, tripData);
+    const userDoc = doc(db, "users", user.username);
+    const tripsCol = collection(userDoc, "trips");
+    await addDoc(tripsCol, tripData);
 
     alert("✅ Trip saved successfully to Firebase!");
   } catch (error) {
