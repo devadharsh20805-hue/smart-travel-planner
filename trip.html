@@ -16,18 +16,100 @@ body {
   scrollbar-width: none;
 }
 body::-webkit-scrollbar { display: none; }
+
+.sidebar {
+  width: 250px;
+  background: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+.sidebar h1 {
+  font-family: 'Dancing Script', cursive;
+  color: #0077b6;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.sidebar .menu button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #caf0f8;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.sidebar .menu button.active,
+.sidebar .menu button:hover {
+  background: #0077b6;
+  color: white;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.plan-trip {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+.plan-trip h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0077b6;
+}
+.plan-trip input, .plan-trip button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+}
+.plan-trip button {
+  background: #0077b6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.plan-trip button:hover {
+  background: #023e8a;
+}
+
+/* Loading overlay */
+#loadingOverlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+.loader {
+  border: 6px solid #ccc;
+  border-top: 6px solid #0077b6;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
 
-<!-- Floating icons -->
-<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
-<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
-<img src="https://cdn-icons-png.flaticon.com/512/616/616490.png" class="floating" alt="luggage">
-<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
-<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
-
-<!-- Sidebar -->
 <div class="sidebar">
   <div>
     <h1>Smart Travel Planner</h1>
@@ -43,7 +125,6 @@ body::-webkit-scrollbar { display: none; }
   </div>
 </div>
 
-<!-- Main content -->
 <div class="main-content">
   <div class="plan-trip">
     <h2>Plan Your Trip</h2>
@@ -59,29 +140,13 @@ body::-webkit-scrollbar { display: none; }
   </div>
 </div>
 
-<!-- Loading Overlay -->
 <div id="loadingOverlay"><div class="loader"></div></div>
 
-<!-- AI Assistant -->
-<button class="assistant-btn" id="assistantBtn" title="Chat with AI">🤖</button>
-<div class="chat-box" id="chatBox">
-  <div class="chat-header">AI Assistant</div>
-  <div class="chat-body" id="chatBody">
-    <p>👋 Need help planning your trip? Ask me anything!</p>
-  </div>
-  <div class="chat-input">
-    <input type="text" id="userInput" placeholder="Type your message...">
-    <button id="sendBtn"><span>📤</span></button>
-  </div>
-</div>
-
-<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // 🔥 Firebase configuration (fixed storageBucket)
   const firebaseConfig = {
     apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
     authDomain: "smart-travel-planner-bd849.firebaseapp.com",
@@ -91,24 +156,17 @@ body::-webkit-scrollbar { display: none; }
     appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
   let currentUser = null;
 
-  // 🧍‍♂️ Detect current user
   onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUser = user;
-      console.log("Logged in as:", user.email);
-    } else {
-      window.location.href = "index.html";
-    }
+    if (user) currentUser = user;
+    else window.location.href = "index.html";
   });
 
-  // 🌍 Trip Form Handling
   const form = document.getElementById("tripForm");
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -125,6 +183,7 @@ body::-webkit-scrollbar { display: none; }
     try {
       if (!currentUser) throw new Error("User not logged in.");
 
+      // ✅ Save to Firebase
       await addDoc(collection(db, "users", currentUser.uid, "trips"), {
         origin,
         destination,
@@ -135,10 +194,19 @@ body::-webkit-scrollbar { display: none; }
         createdAt: new Date().toISOString()
       });
 
-      alert("✅ Trip saved successfully!");
-      window.location.href = "mytrips.html";
+      // ✅ Send to backend AI route
+      const res = await fetch("https://smart-travel-planner-68vq.onrender.com/plan-trip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ origin, destination, days, budget })
+      });
+
+      const data = await res.json();
+      localStorage.setItem("tripResult", JSON.stringify(data));
+      window.location.href = "result.html";
+
     } catch (err) {
-      alert("Error saving trip: " + err.message);
+      alert("Error: " + err.message);
       console.error(err);
     } finally {
       overlay.style.display = "none";
@@ -146,47 +214,12 @@ body::-webkit-scrollbar { display: none; }
   });
 </script>
 
-<!-- Chatbot + Google Maps -->
 <script>
-const assistantBtn = document.getElementById('assistantBtn');
-const chatBox = document.getElementById('chatBox');
-assistantBtn.addEventListener('click', () => chatBox.classList.toggle('active'));
-
-const chatBody = document.getElementById('chatBody');
-const userInput = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendBtn');
-
-async function sendMessage() {
-  const msg = userInput.value.trim();
-  if (!msg) return;
-  chatBody.innerHTML += `<p><strong>You:</strong> ${msg}</p>`;
-  userInput.value = '';
-  chatBody.scrollTop = chatBody.scrollHeight;
-
-  try {
-    const res = await fetch('https://smart-travel-planner-68vq.onrender.com/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: msg })
-    });
-    const data = await res.json();
-    chatBody.innerHTML += `<p><strong>AI:</strong> ${data.reply}</p>`;
-  } catch {
-    chatBody.innerHTML += `<p><strong>AI:</strong> Sorry, I’m having trouble connecting.</p>`;
-  }
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-sendBtn.onclick = sendMessage;
-userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
-
 document.getElementById('exploreBtn').onclick = () => window.location.href = 'home.html';
 document.getElementById('myTripsBtn').onclick = () => window.location.href = 'mytrips.html';
 document.getElementById('profileBtn').onclick = () => window.location.href = 'profile.html';
 document.getElementById('logoutBtn').onclick = () => window.location.href = 'index.html';
-</script>
 
-<script>
 function initAutocomplete() {
   const originInput = document.getElementById('origin');
   new google.maps.places.Autocomplete(originInput, { types: ['(cities)'] });
