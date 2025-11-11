@@ -95,7 +95,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   try {
-    const tripsRef = collection(db, "users", user.uid, "trips");
+    const tripsRef = collection(db, "users", "public", "trips");
     const querySnapshot = await getDocs(tripsRef);
 
     if (querySnapshot.empty) {
