@@ -103,37 +103,30 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    // get latest added trip
     const allTrips = [];
     querySnapshot.forEach(doc => allTrips.push(doc.data()));
     latestTrip = allTrips.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))[0];
 
-    // display trip
+    // ✅ Safe display to avoid undefined errors
+    const safeValue = (val) => val ? val : "N/A";
     tripDetails.innerHTML = `
-      <p><strong>Origin:</strong> ${latestTrip.origin}</p>
-      <p><strong>Destination:</strong> ${latestTrip.destination}</p>
-      <p><strong>Date:</strong> ${latestTrip.date}</p>
-      <p><strong>Days:</strong> ${latestTrip.days}</p>
-      <p><strong>Travelers:</strong> ${latestTrip.travelers}</p>
-      <p><strong>Budget:</strong> ₹${latestTrip.budget}</p>
+      <p><strong>Origin:</strong> ${safeValue(latestTrip.origin)}</p>
+      <p><strong>Destination:</strong> ${safeValue(latestTrip.destination)}</p>
+      <p><strong>Date:</strong> ${safeValue(latestTrip.date)}</p>
+      <p><strong>Days:</strong> ${safeValue(latestTrip.days)}</p>
+      <p><strong>Travelers:</strong> ${safeValue(latestTrip.travelers)}</p>
+      <p><strong>Budget:</strong> ₹${latestTrip.budget ? Number(latestTrip.budget).toLocaleString() : "N/A"}</p>
     `;
 
-    // dummy itinerary (for now)
+    // dummy itinerary
     for (let i=1; i<=latestTrip.days; i++) {
       itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${latestTrip.destination}</li>`;
     }
 
-    // map
-    window.initMap = function() {
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 6,
-        center: { lat: 20.5937, lng: 78.9629 }
-      });
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: latestTrip.destination }, (results, status) => {
-        if (status === "OK") map.setCenter(results[0].geometry.location);
-      });
-    };
+    // set map center if loaded
+    if (window.initMap && typeof window.initMap === "function") {
+      window.initMap();
+    }
   } catch (err) {
     console.error("Error loading trip:", err);
     tripDetails.innerHTML = "<p>Error loading trip details.</p>";
@@ -145,6 +138,22 @@ document.getElementById("saveTripBtn").addEventListener("click", async () => {
   if (!latestTrip) return alert("No trip data to save.");
   alert("✅ Trip already saved to Firebase when planned!");
 });
+</script>
+
+<!-- ✅ Define initMap globally for Google Maps -->
+<script>
+function initMap() {
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 6,
+    center: { lat: 20.5937, lng: 78.9629 }
+  });
+  if (window.latestTrip && window.latestTrip.destination) {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: window.latestTrip.destination }, (results, status) => {
+      if (status === "OK") map.setCenter(results[0].geometry.location);
+    });
+  }
+}
 </script>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initMap"></script>
