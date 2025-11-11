@@ -6,8 +6,33 @@ const bodyParser = require("body-parser");
 const fetch = require("node-fetch");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
+// ✅ Firebase imports
+const { initializeApp } = require("firebase/app");
+const {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where
+} = require("firebase/firestore");
+
+// ✅ Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
+  authDomain: "smart-travel-planner-bd849.firebaseapp.com",
+  projectId: "smart-travel-planner-bd849",
+  storageBucket: "smart-travel-planner-bd849.firebasestorage.app",
+  messagingSenderId: "1017075766889",
+  appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8",
+};
+
+// ✅ Initialize Firebase + Firestore
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+
 const app = express();
-const PORT = process.env.PORT || 5000; // ✅ Changed line for Render
+const PORT = process.env.PORT || 5000;
 
 //  Middleware
 app.use(
@@ -25,55 +50,76 @@ const GEMINI_API_KEY = "AIzaSyB2nKhgkvMMq7zYIxCLIK7sgCbG-XkR6lI";
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-//  Users store
-let users = [];
-
 // ---------------------- AUTH ----------------------
-app.post(["/signup", "/auth/signup"], (req, res) => {
+
+// ✅ Signup Route (saves user in Firestore)
+app.post(["/signup", "/auth/signup"], async (req, res) => {
   const { username, password, age, gender, nationality, preferences } = req.body;
   if (!username || !password)
     return res.status(400).json({ message: "Username & password required" });
 
-  const existing = users.find((u) => u.username === username);
-  if (existing) return res.status(400).json({ message: "User already exists" });
+  try {
+    const usersRef = collection(db, "users");
 
-  users.push({ username, password, age, gender, nationality, preferences });
-  console.log("✅ New user signed up:", username);
-  res.json({ message: "Signup successful" });
+    // Check if user already exists
+    const q = query(usersRef, where("username", "==", username));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty)
+      return res.status(400).json({ message: "User already exists" });
+
+    // Add new user
+    await addDoc(usersRef, { username, password, age, gender, nationality, preferences });
+    console.log("✅ User added to Firestore:", username);
+    res.json({ message: "Signup successful" });
+  } catch (err) {
+    console.error("❌ Firestore error:", err);
+    res.status(500).json({ message: "Signup failed" });
+  }
 });
 
-app.post(["/login", "/auth/login"], (req, res) => {
+// ✅ Login Route (checks Firestore)
+app.post(["/login", "/auth/login"], async (req, res) => {
   const { username, password } = req.body;
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
+  try {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("username", "==", username), where("password", "==", password));
+    const snapshot = await getDocs(q);
 
-  if (!user)
-    return res.status(401).json({ message: "Invalid username or password" });
+    if (snapshot.empty)
+      return res.status(401).json({ message: "Invalid username or password" });
 
-  console.log("✅ User logged in:", username);
-  res.json({ message: "Login successful", user });
+    let userData = null;
+    snapshot.forEach((doc) => (userData = doc.data()));
+
+    console.log("✅ User logged in:", username);
+    res.json({ message: "Login successful", user: userData });
+  } catch (err) {
+    console.error("❌ Firestore login error:", err);
+    res.status(500).json({ message: "Login failed" });
+  }
 });
 
-app.get(["/profile/:username", "/auth/profile/:username"], (req, res) => {
-  const user = users.find((u) => u.username === req.params.username);
-  if (!user) return res.status(404).json({ message: "User not found" });
-  res.json(user);
+// ✅ Profile route (fetch from Firestore)
+app.get(["/profile/:username", "/auth/profile/:username"], async (req, res) => {
+  try {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("username", "==", req.params.username));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return res.status(404).json({ message: "User not found" });
+
+    let userData = null;
+    snapshot.forEach((doc) => (userData = doc.data()));
+    res.json(userData);
+  } catch (err) {
+    console.error("❌ Firestore profile error:", err);
+    res.status(500).json({ message: "Failed to fetch profile" });
+  }
 });
 
 // ---------------------- TRIP PLANNING ----------------------
 
 app.post("/trip/plan", async (req, res) => {
-  const {
-    origin,
-    destination,
-    date,
-    travelers,
-    budget,
-    days,
-    destLat,
-    destLon,
-  } = req.body;
+  const { origin, destination, date, travelers, budget, days, destLat, destLon } = req.body;
 
   console.log(`🧭 Trip planning request: ${origin} ➡ ${destination}`);
 
@@ -109,7 +155,6 @@ app.post("/trip/plan", async (req, res) => {
     const result = await geminiModel.generateContent(prompt);
     let response = result.response.text().trim();
 
-    //  Clean unwanted text
     response = response
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -143,12 +188,9 @@ app.post("/trip/plan", async (req, res) => {
   }
 
   try {
-    //  Unsplash image fetch
     const unsplashKey = "tKk4AhD7RzddKqepqs3r0jI8z92wl7rGmHlyy2C-2zE";
     const imgRes = await fetch(
-      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
-        destination
-      )}&per_page=1&orientation=landscape&client_id=${unsplashKey}`
+      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(destination)}&per_page=1&orientation=landscape&client_id=${unsplashKey}`
     );
 
     const imgData = await imgRes.json();
@@ -161,7 +203,6 @@ app.post("/trip/plan", async (req, res) => {
       "https://via.placeholder.com/1200x600?text=Image+Unavailable";
   }
 
-  // Always send valid JSON
   res.json({
     origin,
     destination,
@@ -199,11 +240,7 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
       `;
     }
 
-    const finalPrompt = `
-      ${contextText}S
-      User: ${message}
-      Assistant:
-    `;
+    const finalPrompt = `${contextText} User: ${message} Assistant:`;
 
     const result = await geminiModel.generateContent(finalPrompt);
     const reply = result.response.text().trim();
@@ -217,5 +254,5 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
 
 // ---------------------- START SERVER ----------------------
 app.listen(PORT, () => {
-  console.log(`✅ Server running at: http://smart-trip-planner:${PORT}`);
+  console.log(`✅ Server running at: http://localhost:${PORT}`);
 });
