@@ -107,7 +107,6 @@ onAuthStateChanged(auth, async (user) => {
     latestTrip = allTrips.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))[0];
     window.latestTrip = latestTrip;
 
-    // ✅ Safe display to avoid undefined errors
     const safeValue = (val) => val ? val : "N/A";
     tripDetails.innerHTML = `
       <p><strong>Origin:</strong> ${safeValue(latestTrip.origin)}</p>
@@ -118,7 +117,6 @@ onAuthStateChanged(auth, async (user) => {
       <p><strong>Budget:</strong> ₹${latestTrip.budget ? Number(latestTrip.budget).toLocaleString() : "N/A"}</p>
     `;
 
-    // dummy itinerary
     for (let i=1; i<=latestTrip.days; i++) {
       itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${latestTrip.destination}</li>`;
     }
@@ -137,22 +135,60 @@ document.getElementById("saveTripBtn").addEventListener("click", () => {
 });
 </script>
 
-<!-- ✅ Google Maps -->
+<!-- ✅ Map route + markers -->
 <script>
-function initMap() {
+window.initMap = function() {
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 6,
-    center: { lat: 20.5937, lng: 78.9629 }
+    center: { lat: 20.5937, lng: 78.9629 },
   });
-  if (window.latestTrip && window.latestTrip.destination) {
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: window.latestTrip.destination }, (results, status) => {
-      if (status === "OK") map.setCenter(results[0].geometry.location);
+
+  const checkTrip = setInterval(() => {
+    if (!window.latestTrip?.origin || !window.latestTrip?.destination) return;
+    clearInterval(checkTrip);
+
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer({
+      map: map,
+      suppressMarkers: false,
+      polylineOptions: {
+        strokeColor: "#007bff",
+        strokeWeight: 5,
+      },
     });
-  }
-}
+
+    const request = {
+      origin: window.latestTrip.origin,
+      destination: window.latestTrip.destination,
+      travelMode: google.maps.TravelMode.DRIVING,
+    };
+
+    directionsService.route(request, (result, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsRenderer.setDirections(result);
+      } else {
+        console.error("Directions failed:", status);
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address: window.latestTrip.destination }, (results, s) => {
+          if (s === "OK" && results[0]) {
+            map.setCenter(results[0].geometry.location);
+            new google.maps.Marker({
+              map,
+              position: results[0].geometry.location,
+              title: window.latestTrip.destination,
+            });
+          }
+        });
+      }
+    });
+  }, 800);
+};
 </script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initMap"></script>
+<!-- ✅ Async Google Maps -->
+<script
+  async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initMap">
+</script>
 </body>
 </html>
