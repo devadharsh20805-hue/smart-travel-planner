@@ -20,7 +20,6 @@ body {
   scroll-behavior: smooth;
 }
 
-/*Hide scrollbar but keep scroll functionality */
 body::-webkit-scrollbar { width: 0; background: transparent; }
 body { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -106,7 +105,6 @@ a {
 }
 a:hover { color: #0099cc; }
 
-/* Preferences styling */
 .preferences {
   display: flex;
   flex-wrap: wrap;
@@ -148,7 +146,7 @@ a:hover { color: #0099cc; }
 <div class="card">
   <h2>Create Account</h2>
   <form id="signupForm">
-    <input type="text" id="username" placeholder="Username" required>
+    <input type="email" id="email" placeholder="Email" required>
     <input type="password" id="password" placeholder="Password" required>
     <input type="number" id="age" placeholder="Age" min="10" max="100" required>
 
@@ -206,49 +204,64 @@ a:hover { color: #0099cc; }
   <a href="index.html">Already have an account? Login</a>
 </div>
 
-<script>
-//  Handle travel preference selection
-const preferenceBoxes = document.querySelectorAll('.pref-box');
-preferenceBoxes.forEach(box => {
-  box.addEventListener('click', () => box.classList.toggle('selected'));
-});
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-//  Signup form submission
-document.getElementById("signupForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
 
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const age = document.getElementById("age").value;
-  const gender = document.getElementById("gender").value;
-  const nationality = document.getElementById("nationality").value;
-  const selectedPrefs = [...document.querySelectorAll('.pref-box.selected')].map(p => p.textContent);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  if (!username || !password) return alert("Username and password are required!");
+  // Handle preference selection
+  const preferenceBoxes = document.querySelectorAll('.pref-box');
+  preferenceBoxes.forEach(box => box.addEventListener('click', () => box.classList.toggle('selected')));
 
-  try {
-    const res = await fetch("https://smart-travel-planner-68vq.onrender.com/signup", {  // ✅ updated route
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password, age, gender, nationality, preferences: selectedPrefs })
-    });
+  // Signup form logic
+  document.getElementById("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    const data = await res.json();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const age = document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+    const nationality = document.getElementById("nationality").value;
+    const selectedPrefs = [...document.querySelectorAll('.pref-box.selected')].map(p => p.textContent);
 
-    if (!res.ok) {
-      return alert(data.message || "Signup failed!");
+    if (!email || !password) return alert("Email and password are required!");
+
+    try {
+      // Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store user details in Firestore (each user gets their own document)
+      await setDoc(doc(db, "users", user.uid), {
+        email,
+        age,
+        gender,
+        nationality,
+        preferences: selectedPrefs,
+        createdAt: new Date().toISOString()
+      });
+
+      alert("Signup successful! Please login now.");
+      window.location.href = "index.html";
+    } catch (error) {
+      alert("Error: " + error.message);
     }
-
-    //  Save user data to localStorage for profile page
-    localStorage.setItem("userProfile", JSON.stringify({ username, age, gender, nationality, preferences: selectedPrefs }));
-
-    alert("Signup successful! Please login now.");
-    window.location.href = "index.html";
-  } catch (err) {
-    console.error("❌ Fetch error:", err);
-    alert("⚠️ Server not running or unreachable!");
-  }
-});
+  });
 </script>
 
 </body>
