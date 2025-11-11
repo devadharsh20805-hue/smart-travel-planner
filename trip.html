@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Travel Planner - Plan a Trip</title>
 <style>
-/* same CSS as before */
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -17,7 +16,6 @@ body {
   scrollbar-width: none;
 }
 body::-webkit-scrollbar { display: none; }
-/* other styles same as before... */
 </style>
 </head>
 <body>
@@ -83,15 +81,15 @@ body::-webkit-scrollbar { display: none; }
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // 🔥 Your Firebase configuration (replace with your own values)
-const firebaseConfig = {
-  apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
-  authDomain: "smart-travel-planner-bd849.firebaseapp.com",
-  projectId: "smart-travel-planner-bd849",
-  storageBucket: "smart-travel-planner-bd849.firebasestorage.app",
-  messagingSenderId: "1017075766889",
-  appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
-};
+  // 🔥 Firebase configuration (fixed storageBucket)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
+    authDomain: "smart-travel-planner-bd849.firebaseapp.com",
+    projectId: "smart-travel-planner-bd849",
+    storageBucket: "smart-travel-planner-bd849.appspot.com",
+    messagingSenderId: "1017075766889",
+    appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
+  };
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -106,7 +104,7 @@ const firebaseConfig = {
       currentUser = user;
       console.log("Logged in as:", user.email);
     } else {
-      window.location.href = "index.html"; // Redirect if not logged in
+      window.location.href = "index.html";
     }
   });
 
@@ -125,7 +123,6 @@ const firebaseConfig = {
     const budget = document.getElementById("budget").value;
 
     try {
-      // ✅ Save each user's trip in a unique Firestore collection
       if (!currentUser) throw new Error("User not logged in.");
 
       await addDoc(collection(db, "users", currentUser.uid, "trips"), {
@@ -142,13 +139,14 @@ const firebaseConfig = {
       window.location.href = "mytrips.html";
     } catch (err) {
       alert("Error saving trip: " + err.message);
+      console.error(err);
     } finally {
       overlay.style.display = "none";
     }
   });
 </script>
 
-<!-- Chatbot + Google Maps autocomplete (unchanged) -->
+<!-- Chatbot + Google Maps -->
 <script>
 const assistantBtn = document.getElementById('assistantBtn');
 const chatBox = document.getElementById('chatBox');
@@ -182,7 +180,6 @@ async function sendMessage() {
 sendBtn.onclick = sendMessage;
 userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 
-// Sidebar navigation
 document.getElementById('exploreBtn').onclick = () => window.location.href = 'home.html';
 document.getElementById('myTripsBtn').onclick = () => window.location.href = 'mytrips.html';
 document.getElementById('profileBtn').onclick = () => window.location.href = 'profile.html';
