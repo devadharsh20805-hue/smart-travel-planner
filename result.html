@@ -136,19 +136,6 @@ button.primary:hover { background:#0099cc; }
   </div>
 </div>
 
-<!-- Chatbot -->
-<button class="assistant-btn" id="assistantBtn">🤖</button>
-<div class="chat-box" id="chatBox">
-  <div class="chat-header">AI Assistant</div>
-  <div class="chat-body" id="chatBody">
-    <p>👋 Hey traveler! Need help understanding your trip?</p>
-  </div>
-  <div class="chat-input">
-    <input type="text" id="userInput" placeholder="Type your message...">
-    <button id="sendBtn"><span>📤</span></button>
-  </div>
-</div>
-
 <!-- ✅ Firebase Integration -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -167,7 +154,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ✅ Load trip data (from sessionStorage)
+// ✅ Load trip data
 const user = JSON.parse(localStorage.getItem("userProfile")) || { username: "guest" };
 const tripData = JSON.parse(sessionStorage.getItem("tripData"));
 const tripDetails = document.getElementById('tripDetails');
@@ -188,19 +175,28 @@ if (tripData) {
   tripData.itinerary.forEach(item => {
     itineraryList.innerHTML += `<li><strong>Day ${item.day}:</strong> Morning: ${item.morning}, Afternoon: ${item.afternoon}, Evening: ${item.evening}</li>`;
   });
+  // ✅ Initialize map after data loads
+  window.initMap = function() {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 6,
+      center: { lat: 20.5937, lng: 78.9629 } // India center
+    });
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: tripData.destination }, (results, status) => {
+      if (status === "OK") map.setCenter(results[0].geometry.location);
+    });
+  };
 } else {
   tripDetails.innerHTML = "<p>No trip data found. Please plan a trip first.</p>";
 }
 
-// ✅ Save Trip to Firestore (each user → separate document)
+// ✅ Save Trip to Firestore
 document.getElementById('saveTripBtn').addEventListener('click', async () => {
   if (!tripData) return alert("No trip data found!");
-
   try {
     const userDoc = doc(db, "users", user.username);
     const tripsCol = collection(userDoc, "trips");
     await addDoc(tripsCol, tripData);
-
     alert("✅ Trip saved successfully to Firebase!");
   } catch (error) {
     console.error("Error saving trip:", error);
@@ -209,6 +205,6 @@ document.getElementById('saveTripBtn').addEventListener('click', async () => {
 });
 </script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&callback=initMap&libraries=places,geometry"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places,geometry&callback=initMap"></script>
 </body>
 </html>
