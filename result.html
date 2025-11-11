@@ -7,7 +7,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: 'Roboto', sans-serif;
   background: linear-gradient(to bottom, #a8e6ff, #f0faff);
@@ -17,172 +16,80 @@ body {
   scrollbar-width: none;
 }
 body::-webkit-scrollbar { display: none; }
-
 @keyframes float {
   0% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(5deg); }
   100% { transform: translateY(0) rotate(0deg); }
 }
-.floating {
-  position: absolute;
-  width: 80px;
-  opacity: 0.25;
-  animation: float 6s ease-in-out infinite;
-  z-index: 0;
-}
-.floating:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
-.floating:nth-child(2) { top: 60%; left: 70%; animation-delay: 2s; }
-.floating:nth-child(3) { top: 40%; left: 30%; animation-delay: 4s; }
-.floating:nth-child(4) { top: 80%; left: 10%; animation-delay: 1s; }
-.floating:nth-child(5) { top: 25%; left: 80%; animation-delay: 3s; }
-
+.floating { position: absolute; width: 80px; opacity: 0.25; animation: float 6s ease-in-out infinite; z-index: 0; }
+.floating:nth-child(1){top:10%;left:15%;animation-delay:0s;}
+.floating:nth-child(2){top:60%;left:70%;animation-delay:2s;}
+.floating:nth-child(3){top:40%;left:30%;animation-delay:4s;}
+.floating:nth-child(4){top:80%;left:10%;animation-delay:1s;}
+.floating:nth-child(5){top:25%;left:80%;animation-delay:3s;}
 .sidebar {
-  width: 250px;
-  background: rgba(255, 255, 255, 0.95);
+  width: 250px; background: rgba(255,255,255,0.95);
   box-shadow: 3px 0 10px rgba(0,0,0,0.1);
-  padding: 30px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  z-index: 5;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
+  padding: 30px 0; display: flex; flex-direction: column;
+  justify-content: space-between; z-index: 5; position: fixed; left: 0; top: 0; bottom: 0;
 }
 .sidebar h1 {
   font-family: 'Dancing Script', cursive;
-  font-size: 2rem;
-  text-align: center;
-  color: #0077b6;
-  margin-bottom: 40px;
+  font-size: 2rem; text-align: center;
+  color: #0077b6; margin-bottom: 40px;
 }
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  padding: 0 20px;
-}
+.menu { display: flex; flex-direction: column; gap: 25px; padding: 0 20px; }
 .menu button {
-  background: none;
-  border: none;
-  text-align: left;
-  padding: 12px 15px;
-  font-size: 1.1rem;
-  color: #0077b6;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  background: none; border: none; text-align: left;
+  padding: 12px 15px; font-size: 1.1rem;
+  color: #0077b6; border-radius: 8px;
+  cursor: pointer; transition: background 0.3s, transform 0.2s;
 }
 .menu button:hover, .menu button.active {
-  background: #00bfff;
-  color: #fff;
-  transform: translateX(5px);
+  background: #00bfff; color: #fff; transform: translateX(5px);
 }
-
-/* Main content */
 .main-content {
-  margin-left: 250px;
-  padding: 40px 60px;
-  width: calc(100% - 250px);
-  overflow-y: auto;
-  position: relative;
-  z-index: 1;
+  margin-left: 250px; padding: 40px 60px;
+  width: calc(100% - 250px); overflow-y: auto;
+  position: relative; z-index: 1;
 }
 .container {
-  background: #fff;
-  padding: 30px;
-  border-radius: 15px;
+  background: #fff; padding: 30px; border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  width: 100%;
-  height: auto;
-  margin: auto;
-  font-size: 1.05rem;
-  line-height: 1.6;
+  width: 100%; height: auto; margin: auto;
+  font-size: 1.05rem; line-height: 1.6;
 }
 h2, h3 { text-align:center; color:#0077b6; }
 ul { margin: 10px 0 20px 20px; color:#333; }
 #map { height:400px; width:100%; margin-top:15px; border-radius:10px; }
-
 button.primary {
-  background:#00bfff;
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  padding:12px;
-  font-weight:bold;
-  cursor:pointer;
-  width:100%;
-  margin-top:15px;
+  background:#00bfff; color:#fff; border:none; border-radius:8px;
+  padding:12px; font-weight:bold; cursor:pointer;
+  width:100%; margin-top:15px;
 }
 button.primary:hover { background:#0099cc; }
-
-/* Chatbot styling */
 .assistant-btn {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background: #00bfff;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 65px;
-  height: 65px;
-  font-size: 1.8rem;
-  cursor: pointer;
+  position: fixed; bottom: 25px; right: 25px;
+  background: #00bfff; color: #fff; border: none;
+  border-radius: 50%; width: 65px; height: 65px;
+  font-size: 1.8rem; cursor: pointer;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
   transition: transform 0.3s, background 0.3s;
   z-index: 10;
 }
-.assistant-btn:hover {
-  background: #0099cc;
-  transform: scale(1.1);
-}
+.assistant-btn:hover { background: #0099cc; transform: scale(1.1); }
 .chat-box {
-  position: fixed;
-  bottom: 100px;
-  right: 25px;
-  width: 320px;
-  height: 420px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 9;
+  position: fixed; bottom: 100px; right: 25px;
+  width: 320px; height: 420px; background: #fff;
+  border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  display: none; flex-direction: column; overflow: hidden; z-index: 9;
 }
 .chat-box.active { display: flex; }
-.chat-header {
-  background: #00bfff;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  font-weight: 600;
-}
-.chat-body {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-  font-size: 0.9rem;
-}
-.chat-input {
-  display: flex;
-  border-top: 1px solid #ddd;
-}
-.chat-input input {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  outline: none;
-}
-.chat-input button {
-  background: #00bfff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-}
+.chat-header { background: #00bfff; color: white; padding: 10px; text-align: center; font-weight: 600; }
+.chat-body { flex: 1; padding: 10px; overflow-y: auto; font-size: 0.9rem; }
+.chat-input { display: flex; border-top: 1px solid #ddd; }
+.chat-input input { flex: 1; padding: 10px; border: none; outline: none; }
+.chat-input button { background: #00bfff; color: white; border: none; padding: 10px 15px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -231,7 +138,6 @@ button.primary:hover { background:#0099cc; }
 
 <!-- Chatbot -->
 <button class="assistant-btn" id="assistantBtn">🤖</button>
-
 <div class="chat-box" id="chatBox">
   <div class="chat-header">AI Assistant</div>
   <div class="chat-body" id="chatBody">
@@ -243,54 +149,31 @@ button.primary:hover { background:#0099cc; }
   </div>
 </div>
 
-<script>
-const assistantBtn = document.getElementById('assistantBtn');
-const chatBox = document.getElementById('chatBox');
-assistantBtn.addEventListener('click', () => chatBox.classList.toggle('active'));
+<!-- ✅ Firebase and Script -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-const sendBtn = document.getElementById("sendBtn");
-const userInput = document.getElementById("userInput");
-const chatBody = document.getElementById("chatBody");
-const userProfile = JSON.parse(localStorage.getItem("userProfile")) || { username: "guest" };
-const tripData = JSON.parse(sessionStorage.getItem('tripData'));
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-async function sendMessage() {
-  const message = userInput.value.trim();
-  if (!message) return;
-  appendMessage("user", message);
-  userInput.value = "";
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  try {
-    const response = await fetch("https://smart-travel-planner-68vq.onrender.com/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: userProfile.username,
-        message,
-        context: tripData || {}
-      })
-    });
-    const data = await response.json();
-    appendMessage("bot", data.reply || "Sorry, I couldn't understand that.");
-  } catch (err) {
-    appendMessage("bot", "⚠️ Server unreachable. Try again later.");
-  }
-}
-
-function appendMessage(sender, text) {
-  const msg = document.createElement("p");
-  msg.textContent = (sender === "user" ? "🧑: " : "🤖: ") + text;
-  chatBody.appendChild(msg);
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
-
-// ✅ Trip rendering logic
+// ✅ Load trip data
+const user = JSON.parse(localStorage.getItem("userProfile")) || { username: "guest" };
+const tripData = JSON.parse(sessionStorage.getItem("tripData"));
 const tripDetails = document.getElementById('tripDetails');
 const itineraryList = document.getElementById('itineraryList');
-if(tripData){
+
+if (tripData) {
   tripDetails.innerHTML = `
     <p><strong>Origin:</strong> ${tripData.origin}</p>
     <p><strong>Destination:</strong> ${tripData.destination}</p>
@@ -303,49 +186,26 @@ if(tripData){
     (Estimate: ₹${tripData.estimatedBudget.toLocaleString('en-IN')}, ${tripData.budgetMatch})</p>
   `;
   tripData.itinerary.forEach(item => {
-    itineraryList.innerHTML += `
-      <li><strong>Day ${item.day}:</strong> Morning: ${item.morning}, Afternoon: ${item.afternoon}, Evening: ${item.evening}</li>
-    `;
+    itineraryList.innerHTML += `<li><strong>Day ${item.day}:</strong> Morning: ${item.morning}, Afternoon: ${item.afternoon}, Evening: ${item.evening}</li>`;
   });
-
-  function initMap() {
-    const map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 6,
-      center: { lat: parseFloat(tripData.lat), lng: parseFloat(tripData.lon) },
-    });
-    const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer({
-      map,
-      suppressMarkers: true,
-      polylineOptions: { strokeColor: "#2F80ED", strokeWeight: 4 },
-    });
-    const addMarker = (pos, title) => new google.maps.Marker({ position: pos, map, title });
-    if (tripData.mappableLocations && tripData.mappableLocations.length > 0) {
-      const origin = tripData.origin;
-      const destination = tripData.destination;
-      const waypoints = tripData.mappableLocations.map(loc => ({ location: loc, stopover: true }));
-      directionsService.route({
-        origin, destination, waypoints,
-        travelMode: google.maps.TravelMode.DRIVING,
-      }, (result, status) => {
-        if (status === "OK") directionsRenderer.setDirections(result);
-      });
-    } else {
-      addMarker({ lat: parseFloat(tripData.lat), lng: parseFloat(tripData.lon) }, tripData.destination);
-    }
-  }
-  window.initMap = initMap;
 } else {
   tripDetails.innerHTML = "<p>No trip data found. Please plan a trip first.</p>";
 }
 
-// ✅ Save Trip Functionality
-document.getElementById('saveTripBtn').addEventListener('click', () => {
+// ✅ Save Trip to Firestore
+document.getElementById('saveTripBtn').addEventListener('click', async () => {
   if (!tripData) return alert("No trip data found!");
-  let savedTrips = JSON.parse(localStorage.getItem('savedTrips')) || [];
-  savedTrips.push(tripData);
-  localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
-  alert("✅ Trip saved successfully! You can view it in My Trips.");
+
+  try {
+    const userDocRef = doc(db, "users", user.username);
+    const tripsCollection = collection(userDocRef, "trips");
+    await addDoc(tripsCollection, tripData);
+
+    alert("✅ Trip saved successfully to Firebase!");
+  } catch (error) {
+    console.error("Error saving trip:", error);
+    alert("⚠️ Failed to save trip. Check console for details.");
+  }
 });
 </script>
 
