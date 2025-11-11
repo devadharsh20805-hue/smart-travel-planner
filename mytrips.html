@@ -24,35 +24,28 @@ body::-webkit-scrollbar { display: none; }
   50% { transform: translateY(-20px) rotate(5deg); }
   100% { transform: translateY(0) rotate(0deg); }
 }
-.floating {
-  position: absolute;
-  width: 80px;
-  opacity: 0.25;
-  animation: float 6s ease-in-out infinite;
-  z-index: 0;
-}
-.floating:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
-.floating:nth-child(2) { top: 60%; left: 70%; animation-delay: 2s; }
-.floating:nth-child(3) { top: 40%; left: 30%; animation-delay: 4s; }
-.floating:nth-child(4) { top: 80%; left: 10%; animation-delay: 1s; }
-.floating:nth-child(5) { top: 25%; left: 80%; animation-delay: 3s; }
+.floating { position: absolute; width: 80px; opacity: 0.25; animation: float 6s ease-in-out infinite; z-index: 0; }
+.floating:nth-child(1){ top:10%;left:15%;animation-delay:0s; }
+.floating:nth-child(2){ top:60%;left:70%;animation-delay:2s; }
+.floating:nth-child(3){ top:40%;left:30%;animation-delay:4s; }
+.floating:nth-child(4){ top:80%;left:10%;animation-delay:1s; }
+.floating:nth-child(5){ top:25%;left:80%;animation-delay:3s; }
 
 /* Sidebar */
 .sidebar {
   width: 250px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255,255,255,0.95);
   box-shadow: 3px 0 10px rgba(0,0,0,0.1);
   padding: 30px 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  z-index: 5;
   position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
+  z-index: 5;
 }
-
 .sidebar h1 {
   font-family: 'Dancing Script', cursive;
   font-size: 2rem;
@@ -60,14 +53,7 @@ body::-webkit-scrollbar { display: none; }
   color: #0077b6;
   margin-bottom: 40px;
 }
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  padding: 0 20px;
-}
-
+.menu { display: flex; flex-direction: column; gap: 25px; padding: 0 20px; }
 .menu button {
   background: none;
   border: none;
@@ -79,24 +65,19 @@ body::-webkit-scrollbar { display: none; }
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
 }
-
 .menu button:hover, .menu button.active {
   background: #00bfff;
   color: #fff;
   transform: translateX(5px);
 }
 
-/* Main content */
+/* Main */
 .main-content {
   margin-left: 250px;
   padding: 40px 60px;
   width: calc(100% - 250px);
   overflow-y: auto;
-  position: relative;
-  z-index: 1;
 }
-
-/* Trip section */
 .trip-section {
   background: #fff;
   border-radius: 20px;
@@ -106,7 +87,6 @@ body::-webkit-scrollbar { display: none; }
   margin: 40px auto;
   text-align: center;
 }
-
 .trip-section h2 {
   color: #0077b6;
   font-size: 1.8rem;
@@ -116,111 +96,40 @@ body::-webkit-scrollbar { display: none; }
   justify-content: center;
   gap: 10px;
 }
-
-.trip-list {
-  margin-top: 15px;
-  text-align: left;
-  color: #333;
-  font-size: 1.1rem;
-}
-
+.trip-list { margin-top: 15px; text-align: left; color: #333; font-size: 1.1rem; }
 .trip-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;
 }
-
 .view-btn {
-  background: #00bfff;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  background: #00bfff; color: white; border: none;
+  padding: 10px 14px; border-radius: 6px;
+  cursor: pointer; transition: background 0.3s, transform 0.2s;
 }
-.view-btn:hover {
-  background: #0099cc;
-  transform: scale(1.05);
-}
+.view-btn:hover { background: #0099cc; transform: scale(1.05); }
+.no-trips { text-align: center; color: #888; font-style: italic; margin-top: 10px; }
 
-.no-trips {
-  text-align: center;
-  color: #888;
-  font-style: italic;
-  margin-top: 10px;
-}
-
-/* AI Assistant */
+/* Chatbot */
 .assistant-btn {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background: #00bfff;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 65px;
-  height: 65px;
-  font-size: 1.8rem;
-  cursor: pointer;
+  position: fixed; bottom: 25px; right: 25px;
+  background: #00bfff; color: #fff; border: none; border-radius: 50%;
+  width: 65px; height: 65px; font-size: 1.8rem; cursor: pointer;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  transition: transform 0.3s, background 0.3s;
-  z-index: 10;
+  transition: transform 0.3s, background 0.3s; z-index: 10;
 }
-.assistant-btn:hover {
-  background: #0099cc;
-  transform: scale(1.1);
-}
-
+.assistant-btn:hover { background: #0099cc; transform: scale(1.1); }
 .chat-box {
-  position: fixed;
-  bottom: 100px;
-  right: 25px;
-  width: 320px;
-  height: 420px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 9;
+  position: fixed; bottom: 100px; right: 25px;
+  width: 320px; height: 420px; background: #fff;
+  border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  display: none; flex-direction: column; overflow: hidden; z-index: 9;
 }
 .chat-box.active { display: flex; }
-.chat-header {
-  background: #00bfff;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  font-weight: 600;
-}
-.chat-body {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-  font-size: 0.9rem;
-}
-.chat-input {
-  display: flex;
-  border-top: 1px solid #ddd;
-}
-.chat-input input {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  outline: none;
-}
-.chat-input button {
-  background: #00bfff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-}
+.chat-header { background: #00bfff; color: white; padding: 10px; text-align: center; font-weight: 600; }
+.chat-body { flex: 1; padding: 10px; overflow-y: auto; font-size: 0.9rem; }
+.chat-input { display: flex; border-top: 1px solid #ddd; }
+.chat-input input { flex: 1; padding: 10px; border: none; outline: none; }
+.chat-input button { background: #00bfff; color: white; border: none; padding: 10px 15px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -237,10 +146,10 @@ body::-webkit-scrollbar { display: none; }
   <div>
     <h1>Smart Travel Planner</h1>
     <div class="menu">
-      <button id="homeBtn">🏠 Explore</button>
-      <button id="planTripBtn">🧭 Plan a Trip</button>
-      <button id="myTripsBtn" class="active">🧳 My Trips</button>
-      <button id="profileBtn">👤 Profile</button>
+      <button onclick="window.location.href='home.html'">🏠 Explore</button>
+      <button onclick="window.location.href='trip.html'">🧭 Plan a Trip</button>
+      <button class="active">🧳 My Trips</button>
+      <button onclick="window.location.href='profile.html'">👤 Profile</button>
     </div>
   </div>
   <div class="menu">
@@ -248,124 +157,110 @@ body::-webkit-scrollbar { display: none; }
   </div>
 </div>
 
-<!-- Main Content -->
+<!-- Main -->
 <div class="main-content">
   <div class="trip-section">
     <h2>✈️ Saved Trips</h2>
     <div id="savedTrips" class="trip-list">
-      <p class="no-trips">No saved trips yet.</p>
+      <p class="no-trips">Loading your trips...</p>
     </div>
   </div>
 </div>
 
-<!-- AI Assistant -->
-<button class="assistant-btn" id="assistantBtn" title="Chat with AI">🤖</button>
+<!-- Chatbot -->
+<button class="assistant-btn" id="assistantBtn">🤖</button>
 <div class="chat-box" id="chatBox">
   <div class="chat-header">AI Assistant</div>
-  <div class="chat-body">
-    <p>👋 Hey traveler! I can help you view or plan your trips.</p>
+  <div class="chat-body" id="chatBody">
+    <p>👋 Hey traveler! I can help you manage your trips.</p>
   </div>
   <div class="chat-input">
-    <input type="text" placeholder="Type your message...">
-    <button><span>📤</span></button>
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button id="sendBtn">📤</button>
   </div>
 </div>
 
-<script>
-//  Toggle Chat Assistant
-const assistantBtn = document.getElementById('assistantBtn');
-const chatBox = document.getElementById('chatBox');
-assistantBtn.addEventListener('click', () => chatBox.classList.toggle('active'));
+<!-- Firebase + Script -->
+<script type="module">
+// 🧩 Import Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, doc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-//  Navigation
-document.getElementById('homeBtn').addEventListener('click', () => window.location.href = 'home.html');
-document.getElementById('planTripBtn').addEventListener('click', () => window.location.href = 'trip.html');
-document.getElementById('myTripsBtn').addEventListener('click', () => window.location.href = 'mytrips.html');
-document.getElementById('profileBtn').addEventListener('click', () => window.location.href = 'profile.html');
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  localStorage.removeItem('userProfile');
-  alert('You have been logged out!');
-  window.location.href = 'index.html';
-});
+// ✅ Your Firebase Config (replace with your own)
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-//  Load saved trips (existing logic)
-const savedTripsDiv = document.getElementById('savedTrips');
-const savedTrips = JSON.parse(localStorage.getItem('savedTrips')) || [];
+// Initialize
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-if (savedTrips.length > 0) {
-  savedTripsDiv.innerHTML = '';
-  savedTrips.forEach((trip, index) => {
-    const tripItem = document.createElement('div');
-    tripItem.classList.add('trip-item');
-    tripItem.innerHTML = `
+// Get user profile
+const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+const username = userProfile?.username || "guest";
+
+// Reference to this user's trips
+const tripsRef = collection(db, "users", username, "trips");
+
+// Fetch & display
+async function loadTrips() {
+  const savedTripsDiv = document.getElementById("savedTrips");
+  savedTripsDiv.innerHTML = "<p class='no-trips'>Loading your trips...</p>";
+
+  const snapshot = await getDocs(tripsRef);
+  if (snapshot.empty) {
+    savedTripsDiv.innerHTML = "<p class='no-trips'>No saved trips yet.</p>";
+    return;
+  }
+
+  savedTripsDiv.innerHTML = "";
+  let index = 1;
+  snapshot.forEach(docSnap => {
+    const trip = docSnap.data();
+    const div = document.createElement("div");
+    div.classList.add("trip-item");
+    div.innerHTML = `
       <div>
-        <p><strong>Trip ${index + 1}</strong></p>
+        <p><strong>Trip ${index++}</strong></p>
         <p><strong>Origin:</strong> ${trip.origin}</p>
         <p><strong>Destination:</strong> ${trip.destination}</p>
         <p><strong>Date:</strong> ${trip.date}</p>
         <p><strong>Duration:</strong> ${trip.days} days</p>
-        <p><strong>Budget:</strong> ₹${trip.budget.toLocaleString('en-IN')}</p>
+        <p><strong>Budget:</strong> ₹${trip.budget}</p>
       </div>
-      <button class="view-btn" data-index="${index}">View Trip Details</button>
+      <button class="view-btn" data-id="${docSnap.id}">View Trip Details</button>
     `;
-    savedTripsDiv.appendChild(tripItem);
+    savedTripsDiv.appendChild(div);
   });
 
-  document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const index = e.target.getAttribute('data-index');
-      const selectedTrip = savedTrips[index];
-      sessionStorage.setItem('tripData', JSON.stringify(selectedTrip));
-      window.location.href = 'result.html';
+  document.querySelectorAll(".view-btn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      const docId = e.target.getAttribute("data-id");
+      const tripSnap = snapshot.docs.find(d => d.id === docId);
+      sessionStorage.setItem("tripData", JSON.stringify(tripSnap.data()));
+      window.location.href = "result.html";
     });
   });
 }
 
-//  AI Chat like trip.html
-const chatBody = document.getElementById('chatBody');
-const userInput = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendBtn');
-const userProfile = JSON.parse(localStorage.getItem('userProfile')) || { username: "guest" };
+loadTrips();
 
-// Function to append messages
-function appendMessage(sender, text) {
-  const p = document.createElement('p');
-  p.textContent = (sender === "user" ? "🧑: " : "🤖: ") + text;
-  chatBody.appendChild(p);
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("userProfile");
+  alert("You have been logged out!");
+  window.location.href = "index.html";
+});
 
-// Send message to server
-async function sendMessage() {
-  const message = userInput.value.trim();
-  if (!message) return;
-  appendMessage("user", message);
-  userInput.value = "";
-
-  const tripData = null; // in mytrips.html we may not have current trip context
-  try {
-    const response = await fetch("https://smart-travel-planner-68vq.onrender.com/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: userProfile.username,
-        message,
-        context: tripData
-      })
-    });
-    const data = await response.json();
-    appendMessage("bot", data.reply || "⚠️ Sorry, I couldn't understand that.");
-  } catch (err) {
-    appendMessage("bot", "⚠️ Server unreachable. Try again later.");
-  }
-}
-
-// Event listeners
-sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', (e) => { if (e.key === "Enter") sendMessage(); });
+// Assistant toggle
+document.getElementById("assistantBtn").addEventListener("click", () =>
+  document.getElementById("chatBox").classList.toggle("active")
+);
 </script>
-
-
-
 </body>
 </html>
