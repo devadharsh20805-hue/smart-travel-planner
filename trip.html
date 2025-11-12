@@ -143,69 +143,70 @@ body::-webkit-scrollbar { display: none; }
 <div id="loadingOverlay"><div class="loader"></div></div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
-    authDomain: "smart-travel-planner-bd849.firebaseapp.com",
-    projectId: "smart-travel-planner-bd849",
-    storageBucket: "smart-travel-planner-bd849.appspot.com",
-    messagingSenderId: "1017075766889",
-    appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
+  authDomain: "smart-travel-planner-bd849.firebaseapp.com",
+  projectId: "smart-travel-planner-bd849",
+  storageBucket: "smart-travel-planner-bd849.appspot.com",
+  messagingSenderId: "1017075766889",
+  appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  let currentUser = null;
+let currentUser = null;
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) currentUser = user;
-    else window.location.href = "index.html";
-  });
+onAuthStateChanged(auth, (user) => {
+  if (user) currentUser = user;
+  else window.location.href = "index.html";
+});
 
-  const form = document.getElementById("tripForm");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const overlay = document.getElementById("loadingOverlay");
-    overlay.style.display = "flex";
+const form = document.getElementById("tripForm");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const overlay = document.getElementById("loadingOverlay");
+  overlay.style.display = "flex";
 
-    const origin = document.getElementById("origin").value;
-    const destination = document.getElementById("destination").value;
-    const date = document.getElementById("date").value;
-    const days = document.getElementById("days").value;
-    const travelers = document.getElementById("travelers").value;
-    const budget = document.getElementById("budget").value;
+  const origin = document.getElementById("origin").value;
+  const destination = document.getElementById("destination").value;
+  const date = document.getElementById("date").value;
+  const days = document.getElementById("days").value;
+  const travelers = document.getElementById("travelers").value;
+  const budget = document.getElementById("budget").value;
 
-    try {
-      if (!currentUser) throw new Error("User not logged in.");
+  try {
+    if (!currentUser) throw new Error("User not logged in.");
 
-      await addDoc(collection(db, "users", currentUser.uid, "trips"), {
-        origin, destination, date, days, travelers, budget,
-        createdAt: new Date().toISOString()
-      });
+    // Save to Firestore
+    await addDoc(collection(db, "users", currentUser.uid, "trips"), {
+      origin, destination, date, days, travelers, budget,
+      createdAt: new Date().toISOString()
+    });
 
-      // ✅ FIXED: correct backend route
-      const res = await fetch("https://smart-travel-planner-68vq.onrender.com/trip/plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin, destination, date, days, travelers, budget })
-      });
+    // Call backend for AI planning
+    const res = await fetch("https://smart-travel-planner-68vq.onrender.com/trip/plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ origin, destination, date, days, travelers, budget })
+    });
 
-      const data = await res.json();
-      sessionStorage.setItem("tripData", JSON.stringify(data));
-      window.location.href = "result.html";
+    const data = await res.json();
+    sessionStorage.setItem("tripData", JSON.stringify(data));
+    window.location.href = "result.html";
 
-    } catch (err) {
-      alert("Error: " + err.message);
-      console.error(err);
-    } finally {
-      overlay.style.display = "none";
-    }
-  });
+  } catch (err) {
+    alert("Error: " + err.message);
+    console.error(err);
+  } finally {
+    overlay.style.display = "none";
+  }
+});
 </script>
 
 <script>
@@ -214,6 +215,7 @@ document.getElementById('myTripsBtn').onclick = () => window.location.href = 'my
 document.getElementById('profileBtn').onclick = () => window.location.href = 'profile.html';
 document.getElementById('logoutBtn').onclick = () => window.location.href = 'index.html';
 
+// Google Places Autocomplete
 function initAutocomplete() {
   const originInput = document.getElementById('origin');
   new google.maps.places.Autocomplete(originInput, { types: ['(cities)'] });
@@ -222,5 +224,6 @@ function initAutocomplete() {
 }
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initAutocomplete"></script>
+
 </body>
 </html>
