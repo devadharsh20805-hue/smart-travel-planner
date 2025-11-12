@@ -55,7 +55,7 @@ body::-webkit-scrollbar { display: none; }
     </div>
 
     <h3>Map of Your Itinerary:</h3>
-    <div id="map"></div>
+    <div id="map" style="height:400px; width:100%;"></div>
 
     <button class="primary" id="saveTripBtn">💾 Save Trip</button>
     <button class="primary" onclick="window.location.href='trip.html'">Plan Another Trip</button>
@@ -84,59 +84,9 @@ const db = getFirestore(app);
 const tripDetails = document.getElementById('tripDetails');
 const itineraryList = document.getElementById('itineraryList');
 let latestTrip = null;
-window.latestTrip = null; // ✅ make global for map
+window.latestTrip = null;
 
-// 🧭 Fetch latest trip for this logged-in user
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  try {
-    const tripsRef = collection(db, "users", currentUser.uid, "trips");
-    const querySnapshot = await getDocs(tripsRef);
-
-    if (querySnapshot.empty) {
-      tripDetails.innerHTML = "<p>No trip data found. Please plan a trip first.</p>";
-      return;
-    }
-
-    const allTrips = [];
-    querySnapshot.forEach(doc => allTrips.push(doc.data()));
-    latestTrip = allTrips.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))[0];
-    window.latestTrip = latestTrip;
-
-    const safeValue = (val) => val ? val : "N/A";
-    tripDetails.innerHTML = `
-      <p><strong>Origin:</strong> ${safeValue(latestTrip.origin)}</p>
-      <p><strong>Destination:</strong> ${safeValue(latestTrip.destination)}</p>
-      <p><strong>Date:</strong> ${safeValue(latestTrip.date)}</p>
-      <p><strong>Days:</strong> ${safeValue(latestTrip.days)}</p>
-      <p><strong>Travelers:</strong> ${safeValue(latestTrip.travelers)}</p>
-      <p><strong>Budget:</strong> ₹${latestTrip.budget ? Number(latestTrip.budget).toLocaleString() : "N/A"}</p>
-    `;
-
-    for (let i=1; i<=latestTrip.days; i++) {
-      itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${latestTrip.destination}</li>`;
-    }
-
-    if (window.initMap && typeof window.initMap === "function") {
-      window.initMap();
-    }
-  } catch (err) {
-    console.error("Error loading trip:", err);
-    tripDetails.innerHTML = "<p>Error loading trip details.</p>";
-  }
-});
-
-document.getElementById("saveTripBtn").addEventListener("click", () => {
-  alert("✅ Trip already saved to Firebase when planned!");
-});
-</script>
-
-<!-- ✅ Map route + markers -->
-<script>
+// ------------------ Map ------------------
 window.initMap = function() {
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 6,
@@ -164,7 +114,7 @@ window.initMap = function() {
     };
 
     directionsService.route(request, (result, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
+      if (status === "OK") {
         directionsRenderer.setDirections(result);
       } else {
         console.error("Directions failed:", status);
@@ -183,6 +133,53 @@ window.initMap = function() {
     });
   }, 800);
 };
+
+// ------------------ Load Trip ------------------
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  try {
+    const tripsRef = collection(db, "users", user.uid, "trips");
+    const querySnapshot = await getDocs(tripsRef);
+
+    if (querySnapshot.empty) {
+      tripDetails.innerHTML = "<p>No trip data found. Please plan a trip first.</p>";
+      return;
+    }
+
+    const allTrips = [];
+    querySnapshot.forEach(doc => allTrips.push(doc.data()));
+    latestTrip = allTrips.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))[0];
+    window.latestTrip = latestTrip;
+
+    const safeValue = (val) => val ? val : "N/A";
+    tripDetails.innerHTML = `
+      <p><strong>Origin:</strong> ${safeValue(latestTrip.origin)}</p>
+      <p><strong>Destination:</strong> ${safeValue(latestTrip.destination)}</p>
+      <p><strong>Date:</strong> ${safeValue(latestTrip.date)}</p>
+      <p><strong>Days:</strong> ${safeValue(latestTrip.days)}</p>
+      <p><strong>Travelers:</strong> ${safeValue(latestTrip.travelers)}</p>
+      <p><strong>Budget:</strong> ₹${latestTrip.budget ? Number(latestTrip.budget).toLocaleString() : "N/A"}</p>
+    `;
+
+    itineraryList.innerHTML = "";
+    for (let i=1; i<=latestTrip.days; i++) {
+      itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${latestTrip.destination}</li>`;
+    }
+
+    window.initMap();
+  } catch (err) {
+    console.error("Error loading trip:", err);
+    tripDetails.innerHTML = "<p>Error loading trip details.</p>";
+  }
+});
+
+document.getElementById("saveTripBtn").addEventListener("click", () => {
+  alert("✅ Trip already saved to Firebase when planned!");
+});
 </script>
 
 <!-- ✅ Async Google Maps -->
