@@ -1,3 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Travel Planner - Plan a Trip</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to bottom, #a8e6ff, #f0faff);
+  display: flex;
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar { display: none; }
+
+.sidebar {
+  width: 250px;
+  background: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+.sidebar h1 {
+  font-family: 'Dancing Script', cursive;
+  color: #0077b6;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.sidebar .menu button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #caf0f8;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.sidebar .menu button.active,
+.sidebar .menu button:hover {
+  background: #0077b6;
+  color: white;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.plan-trip {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+.plan-trip h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0077b6;
+}
+.plan-trip input, .plan-trip button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+}
+.plan-trip button {
+  background: #0077b6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.plan-trip button:hover {
+  background: #023e8a;
+}
+
+/* Loading overlay */
+#loadingOverlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+.loader {
+  border: 6px solid #ccc;
+  border-top: 6px solid #0077b6;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div>
+    <h1>Smart Travel Planner</h1>
+    <div class="menu">
+      <button id="exploreBtn">🏠 Explore</button>
+      <button id="planTripBtn" class="active">🧭 Plan a Trip</button>
+      <button id="myTripsBtn">🧳 My Trips</button>
+      <button id="profileBtn">👤 Profile</button>
+    </div>
+  </div>
+  <div class="menu">
+    <button id="logoutBtn">🚪 Logout</button>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="plan-trip">
+    <h2>Plan Your Trip</h2>
+    <form id="tripForm">
+      <input id="origin" placeholder="Your Starting City" required>
+      <input id="destination" placeholder="Destination City" required>
+      <input type="date" id="date" required>
+      <input type="number" id="days" placeholder="Number of Days" min="1" required>
+      <input type="number" id="travelers" placeholder="Number of Travelers" min="1" required>
+      <input type="number" id="budget" placeholder="Budget (INR)" min="1" required>
+      <button type="submit">Plan Trip</button>
+    </form>
+  </div>
+</div>
+
+<div id="loadingOverlay"><div class="loader"></div></div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -39,13 +183,12 @@
     try {
       if (!currentUser) throw new Error("User not logged in.");
 
-      // ✅ FIXED: correct Firestore collection path to match result.html
-      await addDoc(collection(db, "users", "public", "trips"), {
+      await addDoc(collection(db, "users", currentUser.uid, "trips"), {
         origin, destination, date, days, travelers, budget,
         createdAt: new Date().toISOString()
       });
 
-      // ✅ Backend route (Render)
+      // ✅ FIXED: correct backend route
       const res = await fetch("https://smart-travel-planner-68vq.onrender.com/trip/plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,3 +207,20 @@
     }
   });
 </script>
+
+<script>
+document.getElementById('exploreBtn').onclick = () => window.location.href = 'home.html';
+document.getElementById('myTripsBtn').onclick = () => window.location.href = 'mytrips.html';
+document.getElementById('profileBtn').onclick = () => window.location.href = 'profile.html';
+document.getElementById('logoutBtn').onclick = () => window.location.href = 'index.html';
+
+function initAutocomplete() {
+  const originInput = document.getElementById('origin');
+  new google.maps.places.Autocomplete(originInput, { types: ['(cities)'] });
+  const destInput = document.getElementById('destination');
+  new google.maps.places.Autocomplete(destInput, { types: ['(cities)'] });
+}
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initAutocomplete"></script>
+</body>
+</html>
