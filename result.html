@@ -8,72 +8,77 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(to bottom, #a8e6ff, #f0faff);
-  display: flex;
-  min-height: 100vh;
-  overflow-y: auto;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to bottom, #a8e6ff, #f0faff);
+  display: flex;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 body::-webkit-scrollbar { display: none; }
 
 .sidebar {
-  width: 250px;
-  background: white;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  width: 250px;
+  background: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
 }
 .sidebar h1 {
-  font-family: 'Dancing Script', cursive;
-  color: #0077b6;
-  text-align: center;
-  margin-bottom: 30px;
+  font-family: 'Dancing Script', cursive;
+  color: #0077b6;
+  text-align: center;
+  margin-bottom: 30px;
 }
 .sidebar .menu button {
-  display: block;
-  width: 100%;
-  margin: 8px 0;
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  background: #caf0f8;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #caf0f8;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 .sidebar .menu button:hover {
-  background: #0077b6;
-  color: white;
+  background: #0077b6;
+  color: white;
 }
 
 .main-content {
-  flex: 1;
-  padding: 20px;
+  flex: 1;
+  padding: 20px;
 }
 .container {
-  max-width: 900px;
-  margin: auto;
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
 }
 h2, h3 { color: #0077b6; margin-bottom: 15px; }
 #tripDetails p { margin-bottom: 10px; }
 #itineraryList li { margin-bottom: 8px; }
+/* Added styling for nested itinerary list */
+#itineraryList ul {
+  margin-left: 20px;
+  margin-top: 5px;
+}
 
 #map { height: 400px; width: 100%; margin: 20px 0; }
 
 button.primary {
-  background: #0077b6;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  margin-right: 10px;
-  cursor: pointer;
+  background: #0077b6;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 button.primary:hover { background: #023e8a; }
 </style>
@@ -81,51 +86,58 @@ button.primary:hover { background: #023e8a; }
 <body>
 
 <div class="sidebar">
-  <div>
-    <h1>Smart Travel Planner</h1>
-    <div class="menu">
-      <button onclick="window.location.href='home.html'">🏠 Explore</button>
-      <button onclick="window.location.href='trip.html'">🧭 Plan a Trip</button>
-      <button onclick="window.location.href='mytrips.html'">🧳 My Trips</button>
-      <button onclick="window.location.href='profile.html'">👤 Profile</button>
-    </div>
-  </div>
-  <div class="menu">
-    <button onclick="window.location.href='index.html'">🚪 Logout</button>
-  </div>
+  <div>
+    <h1>Smart Travel Planner</h1>
+    <div class="menu">
+      <button onclick="window.location.href='home.html'">🏠 Explore</button>
+      <button onclick="window.location.href='trip.html'">🧭 Plan a Trip</button>
+      <button onclick="window.location.href='mytrips.html'">🧳 My Trips</button>
+      <button onclick="window.location.href='profile.html'">👤 Profile</button>
+    </div>
+  </div>
+  <div class="menu">
+    <button onclick="window.location.href='index.html'">🚪 Logout</button>
+  </div>
 </div>
 
 <div class="main-content">
-  <div class="container">
-    <h2>Your Trip Plan 😉</h2>
-    <div id="tripDetails"></div>
+  <div class="container">
+    <h2>Your Trip Plan 😉</h2>
+    <div id="tripDetails"></div>
 
-    <div id="itinerary">
-      <h3>Itinerary:</h3>
-      <ul id="itineraryList"></ul>
-    </div>
+    <div id="itinerary">
+      <h3>Itinerary:</h3>
+      <ul id="itineraryList"></ul>
+    </div>
 
-    <h3>Map of Your Itinerary:</h3>
-    <div id="map"></div>
+        <h3>Map of Your Trip:</h3>
+    <div id="map"></div>
 
-    <button class="primary" id="saveTripBtn">💾 Save Trip</button>
-    <button class="primary" onclick="window.location.href='trip.html'">Plan Another Trip</button>
-  </div>
+    <button class="primary" id="saveTripBtn">💾 Save Trip</button>
+    <button class="primary" onclick="window.location.href='trip.html'">Plan Another Trip</button>
+  </div>
 </div>
 
+<script>
+  window.initMap = function() {
+    // Placeholder function. The module script will overwrite this.
+  };
+</script>
+
 <script type="module">
+// Import 'query', 'orderBy', and 'limit' for a more efficient Firebase query
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
-  authDomain: "smart-travel-planner-bd849.firebaseapp.com",
-  projectId: "smart-travel-planner-bd849",
-  storageBucket: "smart-travel-planner-bd849.appspot.com",
-  messagingSenderId: "1017075766889",
-  appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
+  apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
+  authDomain: "smart-travel-planner-bd849.firebaseapp.com",
+  projectId: "smart-travel-planner-bd849",
+  storageBucket: "smart-travel-planner-bd849.appspot.com",
+  messagingSenderId: "1017075766889",
+  appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -134,91 +146,165 @@ const db = getFirestore(app);
 const tripDetails = document.getElementById('tripDetails');
 const itineraryList = document.getElementById('itineraryList');
 
-let latestTrip = null;
+let latestTrip = null; // This will be set by the data loader
 
 // ------------------ Map ------------------
+// This function definition overwrites the placeholder
 window.initMap = function() {
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 6,
-    center: { lat: 20.5937, lng: 78.9629 }, // default India center
-  });
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 6,
+    center: { lat: 20.5937, lng: 78.9629 }, // default India center
+  });
 
-  if (!latestTrip?.origin || !latestTrip?.destination) return;
+  // Only proceed if trip data has been loaded
+  if (!latestTrip?.origin || !latestTrip?.destination) return;
 
-  const directionsService = new google.maps.DirectionsService();
-  const directionsRenderer = new google.maps.DirectionsRenderer({
-    map: map,
-    suppressMarkers: false,
-    polylineOptions: { strokeColor: "#007bff", strokeWeight: 5 }
-  });
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer({
+    map: map,
+    suppressMarkers: false,
+    polylineOptions: { strokeColor: "#007bff", strokeWeight: 5 }
+  });
 
-  const request = {
-    origin: latestTrip.origin,
-    destination: latestTrip.destination,
-    travelMode: google.maps.TravelMode.DRIVING
-  };
+  const request = {
+    origin: latestTrip.origin,
+    destination: latestTrip.destination,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
 
-  directionsService.route(request, (result, status) => {
-    if (status === "OK") directionsRenderer.setDirections(result);
-    else {
-      console.error("Directions failed:", status);
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: latestTrip.destination }, (results, s) => {
-        if (s === "OK" && results[0]) {
-          map.setCenter(results[0].geometry.location);
-          new google.maps.Marker({ map, position: results[0].geometry.location, title: latestTrip.destination });
-        }
-      });
-    }
-  });
+  directionsService.route(request, (result, status) => {
+    if (status === "OK") directionsRenderer.setDirections(result);
+    else {
+      console.error("Directions failed:", status);
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: latestTrip.destination }, (results, s) => {
+        if (s === "OK" && results[0]) {
+          map.setCenter(results[0].geometry.location);
+          new google.maps.Marker({ map, position: results[0].geometry.location, title: latestTrip.destination });
+        }
+      });
+    }
+  });
 };
 
-// ------------------ Load Trip from Firebase ------------------
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  try {
-    const tripsRef = collection(db, "users", user.uid, "trips");
-    const querySnapshot = await getDocs(tripsRef);
-
-    if (querySnapshot.empty) {
-      tripDetails.innerHTML = "<p>No trip data found. Please plan a trip first.</p>";
-      return;
-    }
-
-    const allTrips = [];
-    querySnapshot.forEach(doc => allTrips.push(doc.data()));
-    latestTrip = allTrips.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-
+// ------------------ Data Display Function ------------------
+/**
+ * Populates the HTML with data from a trip object.
+ * Handles both full AI-generated objects and basic Firebase input objects.
+ */
+function displayTripData(trip) {
+    latestTrip = trip; // Set the global variable for the map
     const safeValue = val => val || "N/A";
+    
+    // Check if we have the full AI-generated object (it will have 'estimatedBudget')
+    const isFullTrip = trip.hasOwnProperty('estimatedBudget');
+    
+    // FIX #1: Safely convert budget values to strings, preventing toLocaleString error
+    const displayBudget = trip.budget ? Number(trip.budget).toLocaleString() : "N/A";
+    const displayEstimatedBudget = trip.estimatedBudget ? Number(trip.estimatedBudget).toLocaleString() : "N/A";
+
     tripDetails.innerHTML = `
-      <p><strong>Origin:</strong> ${safeValue(latestTrip.origin)}</p>
-      <p><strong>Destination:</strong> ${safeValue(latestTrip.destination)}</p>
-      <p><strong>Date:</strong> ${safeValue(latestTrip.date)}</p>
-      <p><strong>Days:</strong> ${safeValue(latestTrip.days)}</p>
-      <p><strong>Travelers:</strong> ${safeValue(latestTrip.travelers)}</p>
-      <p><strong>Budget:</strong> ₹${latestTrip.budget ? Number(latestTrip.budget).toLocaleString() : "N/A"}</p>
+      <p><strong>Origin:</strong> ${safeValue(trip.origin)}</p>
+      <p><strong>Destination:</strong> ${safeValue(trip.destination)}</p>
+      <p><strong>Date:</strong> ${safeValue(trip.date)}</p>
+      <p><strong>Days:</strong> ${safeValue(trip.days)}</p>
+      <p><strong>Travelers:</strong> ${safeValue(trip.travelers)}</p>
+      <p><strong>Your Budget:</strong> ₹${displayBudget}</p>
     `;
 
-    itineraryList.innerHTML = "";
-    for (let i=1; i<=Number(latestTrip.days); i++) {
-      itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${latestTrip.destination}</li>`;
+    // Add AI-specific details only if they exist
+    if (isFullTrip) {
+        tripDetails.innerHTML += `
+            <p><strong>Estimated Trip Cost:</strong> ₹${displayEstimatedBudget} (${safeValue(trip.budgetMatch)})</p>
+            <p><strong>Travel Time:</strong> ${safeValue(trip.travelDuration)}</p>
+            <p><strong>Weather:</strong> ${safeValue(trip.weather)}</p>
+        `;
     }
 
-    // Initialize Map after data is loaded
+    itineraryList.innerHTML = "";
+    
+    // Display detailed itinerary if it exists
+    if (isFullTrip && trip.itinerary && Array.isArray(trip.itinerary)) {
+        trip.itinerary.forEach(dayPlan => {
+            itineraryList.innerHTML += `
+                <li>
+                    <strong>Day ${dayPlan.day}:</strong>
+                    <ul>
+                        <li><small>Morning:</small> ${safeValue(dayPlan.morning)}</li>
+                        <li><small>Afternoon:</small> ${safeValue(dayPlan.afternoon)}</li>
+                        <li><small>Evening:</small> ${safeValue(dayPlan.evening)}</li>
+                    </ul>
+                </li>
+            `;
+        });
+    } else {
+        // Fallback for basic data (or if AI fails to return itinerary)
+        const numDays = Number(trip.days) || 1;
+        for (let i = 1; i <= numDays; i++) {
+            itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${safeValue(trip.destination)}</li>`;
+        }
+    }
+    
+    // Now that 'latestTrip' is set, initialize the map
     window.initMap();
+}
 
-  } catch(err) {
-    console.error("Error loading trip:", err);
-    tripDetails.innerHTML = "<p>Error loading trip details.</p>";
-  }
-});
+// ------------------ Load Trip Data ------------------
+/**
+ * Loads trip data, prioritizing sessionStorage (for new plans)
+ * and falling back to Firebase (for refreshes/direct loads).
+ */
+function loadTrip() {
+    // FIX #1: Prioritize loading the full AI-generated trip from sessionStorage
+    const storedTripData = sessionStorage.getItem("tripData");
+
+    if (storedTripData) {
+        try {
+            const trip = JSON.parse(storedTripData);
+            displayTripData(trip);
+            sessionStorage.removeItem("tripData"); // Clear it after use
+            return; // We are done
+        } catch (err) {
+            console.error("Failed to parse trip data from session storage:", err);
+            // If parsing fails, fall through to load from Firebase
+        }
+    }
+
+    // Fallback: If no sessionStorage data, load latest trip input from Firebase
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      try {
+        // More efficient query: Get only the single latest trip
+        const tripsRef = collection(db, "users", user.uid, "trips");
+        const q = query(tripsRef, orderBy("createdAt", "desc"), limit(1));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          tripDetails.innerHTML = "<p>No trip data found. Please plan a trip first.</p>";
+          return;
+        }
+
+        // Get the single latest document
+        const latestTripData = querySnapshot.docs[0].data();
+        displayTripData(latestTripData);
+
+      } catch(err) {
+        console.error("Error loading trip from Firebase:", err);
+        tripDetails.innerHTML = "<p>Error loading trip details.</p>";
+      }
+    });
+}
+
+// Start the data loading process
+loadTrip();
+
 
 document.getElementById("saveTripBtn").addEventListener("click", () => {
-  alert("✅ Trip already saved to Firebase when planned!");
+  alert("✅ Trip already saved to Firebase when planned!");
 });
 </script>
 
