@@ -147,6 +147,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
   authDomain: "smart-travel-planner-bd849.firebaseapp.com",
@@ -155,20 +156,19 @@ const firebaseConfig = {
   messagingSenderId: "1017075766889",
   appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUser = null;
 
-onAuthStateChanged(auth, (user) => {
-  if (user) currentUser = user;
-  else window.location.href = "index.html";
+onAuthStateChanged(auth, user => {
+  if (!user) window.location.href = "index.html";
+  else currentUser = user;
 });
 
 const form = document.getElementById("tripForm");
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", async e => {
   e.preventDefault();
   const overlay = document.getElementById("loadingOverlay");
   overlay.style.display = "flex";
@@ -183,13 +183,13 @@ form.addEventListener("submit", async (e) => {
   try {
     if (!currentUser) throw new Error("User not logged in.");
 
-    // Save to Firestore
+    // Save trip to Firebase
     await addDoc(collection(db, "users", currentUser.uid, "trips"), {
       origin, destination, date, days, travelers, budget,
       createdAt: new Date().toISOString()
     });
 
-    // Call backend for AI planning
+    // Call backend AI service
     const res = await fetch("https://smart-travel-planner-68vq.onrender.com/trip/plan", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -207,20 +207,17 @@ form.addEventListener("submit", async (e) => {
     overlay.style.display = "none";
   }
 });
-</script>
 
-<script>
-document.getElementById('exploreBtn').onclick = () => window.location.href = 'home.html';
-document.getElementById('myTripsBtn').onclick = () => window.location.href = 'mytrips.html';
-document.getElementById('profileBtn').onclick = () => window.location.href = 'profile.html';
-document.getElementById('logoutBtn').onclick = () => window.location.href = 'index.html';
+// Sidebar navigation
+document.getElementById('exploreBtn').onclick = () => window.location.href='home.html';
+document.getElementById('myTripsBtn').onclick = () => window.location.href='mytrips.html';
+document.getElementById('profileBtn').onclick = () => window.location.href='profile.html';
+document.getElementById('logoutBtn').onclick = () => window.location.href='index.html';
 
 // Google Places Autocomplete
 function initAutocomplete() {
-  const originInput = document.getElementById('origin');
-  new google.maps.places.Autocomplete(originInput, { types: ['(cities)'] });
-  const destInput = document.getElementById('destination');
-  new google.maps.places.Autocomplete(destInput, { types: ['(cities)'] });
+  new google.maps.places.Autocomplete(document.getElementById('origin'), { types: ['(cities)'] });
+  new google.maps.places.Autocomplete(document.getElementById('destination'), { types: ['(cities)'] });
 }
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initAutocomplete"></script>
