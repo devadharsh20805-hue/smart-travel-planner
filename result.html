@@ -11,23 +11,75 @@ body {
   font-family: 'Roboto', sans-serif;
   background: linear-gradient(to bottom, #a8e6ff, #f0faff);
   display: flex;
-  height: 100vh;
-  overflow-y: scroll;
-  scrollbar-width: none;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 body::-webkit-scrollbar { display: none; }
+
+.sidebar {
+  width: 250px;
+  background: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+.sidebar h1 {
+  font-family: 'Dancing Script', cursive;
+  color: #0077b6;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.sidebar .menu button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #caf0f8;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.sidebar .menu button:hover {
+  background: #0077b6;
+  color: white;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+h2, h3 { color: #0077b6; margin-bottom: 15px; }
+#tripDetails p { margin-bottom: 10px; }
+#itineraryList li { margin-bottom: 8px; }
+
+#map { height: 400px; width: 100%; margin: 20px 0; }
+
+button.primary {
+  background: #0077b6;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+button.primary:hover { background: #023e8a; }
 </style>
 </head>
 <body>
 
-<!-- Floating icons -->
-<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
-<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
-<img src="https://cdn-icons-png.flaticon.com/512/616/616490.png" class="floating" alt="luggage">
-<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="floating" alt="plane">
-<img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="floating" alt="cloud">
-
-<!-- Sidebar -->
 <div class="sidebar">
   <div>
     <h1>Smart Travel Planner</h1>
@@ -43,7 +95,6 @@ body::-webkit-scrollbar { display: none; }
   </div>
 </div>
 
-<!-- Main Content -->
 <div class="main-content">
   <div class="container">
     <h2>Your Trip Plan 😉</h2>
@@ -55,19 +106,19 @@ body::-webkit-scrollbar { display: none; }
     </div>
 
     <h3>Map of Your Itinerary:</h3>
-    <div id="map" style="height:400px; width:100%;"></div>
+    <div id="map"></div>
 
     <button class="primary" id="saveTripBtn">💾 Save Trip</button>
     <button class="primary" onclick="window.location.href='trip.html'">Plan Another Trip</button>
   </div>
 </div>
 
-<!-- ✅ Firebase Integration -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAw-AhqKS1FemISwb7JdyldSb_ESp1FQhA",
   authDomain: "smart-travel-planner-bd849.firebaseapp.com",
@@ -76,65 +127,53 @@ const firebaseConfig = {
   messagingSenderId: "1017075766889",
   appId: "1:1017075766889:web:6c7c7d3440c3aac45db4f8"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 const tripDetails = document.getElementById('tripDetails');
 const itineraryList = document.getElementById('itineraryList');
+
 let latestTrip = null;
-window.latestTrip = null;
 
 // ------------------ Map ------------------
 window.initMap = function() {
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 6,
-    center: { lat: 20.5937, lng: 78.9629 },
+    center: { lat: 20.5937, lng: 78.9629 }, // default India center
   });
 
-  const checkTrip = setInterval(() => {
-    if (!window.latestTrip?.origin || !window.latestTrip?.destination) return;
-    clearInterval(checkTrip);
+  if (!latestTrip?.origin || !latestTrip?.destination) return;
 
-    const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer({
-      map: map,
-      suppressMarkers: false,
-      polylineOptions: {
-        strokeColor: "#007bff",
-        strokeWeight: 5,
-      },
-    });
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer({
+    map: map,
+    suppressMarkers: false,
+    polylineOptions: { strokeColor: "#007bff", strokeWeight: 5 }
+  });
 
-    const request = {
-      origin: window.latestTrip.origin,
-      destination: window.latestTrip.destination,
-      travelMode: google.maps.TravelMode.DRIVING,
-    };
+  const request = {
+    origin: latestTrip.origin,
+    destination: latestTrip.destination,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
 
-    directionsService.route(request, (result, status) => {
-      if (status === "OK") {
-        directionsRenderer.setDirections(result);
-      } else {
-        console.error("Directions failed:", status);
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ address: window.latestTrip.destination }, (results, s) => {
-          if (s === "OK" && results[0]) {
-            map.setCenter(results[0].geometry.location);
-            new google.maps.Marker({
-              map,
-              position: results[0].geometry.location,
-              title: window.latestTrip.destination,
-            });
-          }
-        });
-      }
-    });
-  }, 800);
+  directionsService.route(request, (result, status) => {
+    if (status === "OK") directionsRenderer.setDirections(result);
+    else {
+      console.error("Directions failed:", status);
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: latestTrip.destination }, (results, s) => {
+        if (s === "OK" && results[0]) {
+          map.setCenter(results[0].geometry.location);
+          new google.maps.Marker({ map, position: results[0].geometry.location, title: latestTrip.destination });
+        }
+      });
+    }
+  });
 };
 
-// ------------------ Load Trip ------------------
+// ------------------ Load Trip from Firebase ------------------
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "index.html";
@@ -152,10 +191,9 @@ onAuthStateChanged(auth, async (user) => {
 
     const allTrips = [];
     querySnapshot.forEach(doc => allTrips.push(doc.data()));
-    latestTrip = allTrips.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))[0];
-    window.latestTrip = latestTrip;
+    latestTrip = allTrips.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-    const safeValue = (val) => val ? val : "N/A";
+    const safeValue = val => val || "N/A";
     tripDetails.innerHTML = `
       <p><strong>Origin:</strong> ${safeValue(latestTrip.origin)}</p>
       <p><strong>Destination:</strong> ${safeValue(latestTrip.destination)}</p>
@@ -166,12 +204,14 @@ onAuthStateChanged(auth, async (user) => {
     `;
 
     itineraryList.innerHTML = "";
-    for (let i=1; i<=latestTrip.days; i++) {
+    for (let i=1; i<=Number(latestTrip.days); i++) {
       itineraryList.innerHTML += `<li><strong>Day ${i}:</strong> Explore top places in ${latestTrip.destination}</li>`;
     }
 
+    // Initialize Map after data is loaded
     window.initMap();
-  } catch (err) {
+
+  } catch(err) {
     console.error("Error loading trip:", err);
     tripDetails.innerHTML = "<p>Error loading trip details.</p>";
   }
@@ -182,10 +222,6 @@ document.getElementById("saveTripBtn").addEventListener("click", () => {
 });
 </script>
 
-<!-- ✅ Async Google Maps -->
-<script
-  async
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initMap">
-</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgnTn2jnHUN8bTJkFkDm05ginAbAG9urU&libraries=places&callback=initMap"></script>
 </body>
 </html>
